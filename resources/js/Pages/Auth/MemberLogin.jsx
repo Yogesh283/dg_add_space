@@ -93,16 +93,6 @@ export default function MemberLogin() {
                             <p className="rounded-xl bg-[#ff5c1a]/10 px-3 py-2 text-sm text-[#ff5c1a]">
                                 OTP sent to <strong>{email}</strong>
                             </p>
-                            {flash?.debug_otp && (
-                                <div className="rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-3 text-center">
-                                    <p className="text-xs font-semibold uppercase tracking-wide text-amber-400">
-                                        Local OTP (SMTP not configured)
-                                    </p>
-                                    <p className="mt-1 text-2xl font-bold tracking-[0.35em] text-white">
-                                        {flash.debug_otp}
-                                    </p>
-                                </div>
-                            )}
                             <div>
                                 <label className="mb-1 block text-sm font-semibold text-neutral-300">Enter OTP</label>
                                 <input

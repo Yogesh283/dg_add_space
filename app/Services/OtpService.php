@@ -13,9 +13,9 @@ use Throwable;
 class OtpService
 {
     /**
-     * Create and send OTP. Returns the OTP string (for local/debug flash only).
+     * Create and send OTP via email.
      */
-    public function send(string $email, string $purpose = 'login'): string
+    public function send(string $email, string $purpose = 'login'): void
     {
         $otp = (string) random_int(100000, 999999);
 
@@ -44,11 +44,6 @@ class OtpService
             ]);
         }
 
-        if (app()->environment('local')) {
-            Log::info("Login OTP for {$email}: {$otp}");
-        }
-
-        return $otp;
     }
 
     public function verify(string $email, string $otp, string $purpose = 'login'): bool

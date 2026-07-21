@@ -69,21 +69,13 @@ class MemberAuthController extends Controller
         ]);
 
         $otpService->ensureUserExists($data['email']);
-        $otp = $otpService->send($data['email'], 'login');
+        $otpService->send($data['email'], 'login');
 
-        $payload = [
+        return back()->with([
             'otp_sent' => true,
             'otp_email' => $data['email'],
-            'success' => 'OTP sent to your Gmail / email inbox.',
-        ];
-
-        // Local only: show OTP on screen when SMTP is not configured
-        if (app()->environment('local')) {
-            $payload['debug_otp'] = $otp;
-            $payload['success'] = 'OTP generated (local mode). Use the code shown below.';
-        }
-
-        return back()->with($payload);
+            'success' => 'OTP sent to your email inbox. Please check your Gmail.',
+        ]);
     }
 
     public function verifyOtp(Request $request, OtpService $otpService): RedirectResponse
