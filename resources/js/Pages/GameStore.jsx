@@ -366,7 +366,7 @@ export default function GameStore({ games = [], categories = [] }) {
                                             <img
                                                 src={game.image}
                                                 alt={game.name}
-                                                className="h-40 w-full rounded-xl border border-white/10 bg-white/5 object-contain p-2"
+                                                className="h-40 w-full rounded-xl object-cover"
                                             />
                                             <h3 className="mt-3 text-lg font-bold text-white">{game.name}</h3>
                                             <p className="text-xs text-neutral-500">
@@ -451,7 +451,7 @@ export default function GameStore({ games = [], categories = [] }) {
                                     <img
                                         src={selectedGame.image}
                                         alt={`${selectedGame.name} banner`}
-                                        className="h-72 w-full rounded-xl border border-white/10 bg-white/5 object-contain p-2"
+                                        className="h-72 w-full rounded-xl object-cover"
                                     />
                                     <div className="overflow-hidden rounded-xl border border-white/10">
                                         <div className="relative w-full pt-[56.25%]">
@@ -464,21 +464,14 @@ export default function GameStore({ games = [], categories = [] }) {
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-3 gap-3">
-                                        <img src={selectedGame.image} alt="Screenshot 1" className="h-24 w-full rounded-lg border border-white/10 bg-white/5 object-contain p-1.5" />
-                                        <img src={games[1]?.image || selectedGame.image} alt="Screenshot 2" className="h-24 w-full rounded-lg border border-white/10 bg-white/5 object-contain p-1.5" />
-                                        <img src={games[2]?.image || selectedGame.image} alt="Screenshot 3" className="h-24 w-full rounded-lg border border-white/10 bg-white/5 object-contain p-1.5" />
+                                        <img src={selectedGame.image} alt="Screenshot 1" className="h-24 w-full rounded-lg object-cover" />
+                                        <img src={games[1]?.image || selectedGame.image} alt="Screenshot 2" className="h-24 w-full rounded-lg object-cover" />
+                                        <img src={games[2]?.image || selectedGame.image} alt="Screenshot 3" className="h-24 w-full rounded-lg object-cover" />
                                     </div>
                                 </div>
                                 <div className="space-y-4">
-                                    <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-neutral-400">
-                                        <p><span className="font-semibold text-white">Technology:</span> {selectedGame.tech || 'Unity'}</p>
-                                        <p><span className="font-semibold text-white">Monetization:</span> AdMob + Optional IAP</p>
-                                        <p><span className="font-semibold text-white">Support:</span> Play Store + AdMob Assistance</p>
-                                        <p><span className="font-semibold text-white">Source Code:</span> Included</p>
-                                        <p><span className="font-semibold text-white">Delivery:</span> {selectedGame.delivery || '7-10 days'}</p>
-                                    </div>
                                     <div className="rounded-xl border border-[#ff5c1a]/30 bg-[#ff5c1a]/5 p-4">
-                                        <h3 className="font-bold text-white">Pricing Box</h3>
+                                        <h3 className="font-bold text-white">Pricing</h3>
                                         <ul className="mt-2 space-y-1.5 text-sm text-neutral-300">
                                             <li>Game Price: ₹{Number(selectedGame.price).toLocaleString('en-IN')}</li>
                                             <li>Customization Cost: ₹9,999+</li>

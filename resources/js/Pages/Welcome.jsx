@@ -26,6 +26,7 @@ import { heroBannerImage, landingBanners } from '../data/appImages';
 const navLinks = [
     { href: '#about', label: 'About' },
     { href: '#pricing', label: 'Pricing' },
+    { href: '#income', label: 'Income' },
     { href: '#services', label: 'Services' },
     { href: '#how-it-works', label: 'Process' },
     { href: '#faq', label: 'FAQ' },
@@ -502,10 +503,17 @@ export default function Welcome() {
                                 <p className="mt-5 max-w-xl text-base leading-relaxed text-neutral-400 sm:text-lg">
                                     We develop your game, publish it on the Google Play Store, integrate Google AdMob, and help grow your audience through digital marketing.
                                 </p>
-                                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                                     <a href="#contact" className="juego-btn">
                                         <Rocket className="size-4" />
                                         Start Your Project
+                                    </a>
+                                    <a
+                                        href="/game-store"
+                                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1aa3ff] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-[#1aa3ff]/25 transition hover:bg-[#0d8ee6] hover:shadow-[#1aa3ff]/40"
+                                    >
+                                        <Store className="size-4" />
+                                        Game Store
                                     </a>
                                     <a href="#services" className="juego-btn-outline">
                                         View Services
@@ -644,6 +652,51 @@ export default function Welcome() {
                         </div>
                     </section>
 
+                    {/* Income — nav 3rd section */}
+                    <section id="income" className="bg-[#111111] py-16">
+                        <div className="mx-auto max-w-7xl px-4 md:px-8">
+                            <SectionHeading
+                                title="Potential"
+                                highlight="Monthly Income"
+                                subtitle="Illustrative earning ranges based on active users."
+                            />
+                            <div className="grid gap-5 md:grid-cols-3">
+                                {incomeTiers.map((tier) => (
+                                    <article
+                                        key={tier.users}
+                                        className={`overflow-hidden rounded-2xl border ${
+                                            tier.featured
+                                                ? 'border-[#ff5c1a] bg-[#ff5c1a]/5 shadow-md'
+                                                : 'border-white/10 bg-[#141414]'
+                                        }`}
+                                    >
+                                        <img
+                                            src={tier.banner}
+                                            alt={`${tier.users} income potential`}
+                                            className="h-36 w-full object-cover sm:h-40"
+                                        />
+                                        <div className="p-6">
+                                            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
+                                                {tier.label}
+                                            </p>
+                                            <p className="mt-2 text-2xl font-bold text-white">{tier.users}</p>
+                                            <p className="mt-3 text-lg font-bold text-[#ff5c1a]">{tier.income}</p>
+                                            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+                                                <div
+                                                    className="h-full rounded-full bg-[#ff5c1a]"
+                                                    style={{ width: tier.width }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                            <p className="mt-5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
+                                Important note: Actual revenue depends on user engagement, ad impressions, audience location, app category, and overall app performance.
+                            </p>
+                        </div>
+                    </section>
+
                     {/* Extra banners */}
                     <section className="mx-auto max-w-7xl px-4 py-14 md:px-8">
                         <div className="mb-8 text-center">
@@ -745,51 +798,6 @@ export default function Welcome() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </section>
-
-                    {/* Income */}
-                    <section id="income" className="bg-[#111111] py-16">
-                        <div className="mx-auto max-w-7xl px-4 md:px-8">
-                            <SectionHeading
-                                title="Potential"
-                                highlight="Monthly Income"
-                                subtitle="Illustrative earning ranges based on active users."
-                            />
-                            <div className="grid gap-5 md:grid-cols-3">
-                                {incomeTiers.map((tier) => (
-                                    <article
-                                        key={tier.users}
-                                        className={`overflow-hidden rounded-2xl border ${
-                                            tier.featured
-                                                ? 'border-[#ff5c1a] bg-[#ff5c1a]/5 shadow-md'
-                                                : 'border-white/10 bg-[#141414]'
-                                        }`}
-                                    >
-                                        <img
-                                            src={tier.banner}
-                                            alt={`${tier.users} income potential`}
-                                            className="h-36 w-full object-cover sm:h-40"
-                                        />
-                                        <div className="p-6">
-                                            <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">
-                                                {tier.label}
-                                            </p>
-                                            <p className="mt-2 text-2xl font-bold text-white">{tier.users}</p>
-                                            <p className="mt-3 text-lg font-bold text-[#ff5c1a]">{tier.income}</p>
-                                            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
-                                                <div
-                                                    className="h-full rounded-full bg-[#ff5c1a]"
-                                                    style={{ width: tier.width }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </article>
-                                ))}
-                            </div>
-                            <p className="mt-5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
-                                Important note: Actual revenue depends on user engagement, ad impressions, audience location, app category, and overall app performance.
-                            </p>
                         </div>
                     </section>
 
