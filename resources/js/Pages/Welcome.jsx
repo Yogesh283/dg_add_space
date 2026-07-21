@@ -434,7 +434,56 @@ export default function Welcome() {
                 </header>
 
                 <main>
-                    {/* Hero */}
+                    {/* Only highlight strip — nav ke bilkul neeche */}
+                    <section id="highlights" className="border-b border-white/10 bg-[#111111] py-6 md:py-8">
+                        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 px-4 sm:grid-cols-2 md:px-8 lg:grid-cols-4">
+                            {featureCards.map((card) => (
+                                <article
+                                    key={card.title}
+                                    className="group relative overflow-hidden rounded-2xl border bg-[#141414] p-4 transition hover:-translate-y-0.5"
+                                    style={{
+                                        borderColor: card.border,
+                                        boxShadow: `0 0 20px ${card.soft}`,
+                                    }}
+                                >
+                                    <div className="flex items-start gap-3">
+                                        <div
+                                            className="flex size-11 shrink-0 items-center justify-center rounded-full border"
+                                            style={{
+                                                borderColor: card.accent,
+                                                background: card.playStore ? '#ffffff' : card.soft,
+                                                color: card.accent,
+                                            }}
+                                        >
+                                            {card.playStore ? (
+                                                <GooglePlayIcon className="size-6" />
+                                            ) : (
+                                                <card.icon className="size-5" />
+                                            )}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="text-base font-bold text-white">{card.title}</h3>
+                                            <p className="text-xs font-semibold" style={{ color: card.accent }}>
+                                                {card.subtitle}
+                                            </p>
+                                            <p className="mt-2 text-xs leading-relaxed text-neutral-400">
+                                                {card.desc}
+                                            </p>
+                                        </div>
+                                        <span
+                                            className="mt-1 text-base font-bold transition group-hover:translate-x-0.5"
+                                            style={{ color: card.accent }}
+                                            aria-hidden
+                                        >
+                                            →
+                                        </span>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Hero — main content same */}
                     <section id="home" className="relative overflow-hidden">
                         <div className="absolute inset-0 bg-[#0a0a0a]" />
                         <div
@@ -546,66 +595,13 @@ export default function Welcome() {
                     {/* About */}
                     <section id="about" className="mx-auto max-w-7xl px-4 py-16 md:px-8">
                         <SectionEyebrow>About DG Ad Space</SectionEyebrow>
-                        <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-                            <div>
-                                <h2 className="text-3xl font-bold text-white sm:text-4xl">
-                                    A complete gaming business solution
-                                </h2>
-                                <p className="mt-4 text-base leading-relaxed text-neutral-400 sm:text-lg">
-                                    DG Ad Space helps entrepreneurs and creators transform their gaming ideas into scalable digital businesses. We provide end-to-end solutions, from game development and Play Store publishing to user acquisition and long-term growth strategies.
-                                </p>
-                            </div>
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                {featureCards.map((card) => (
-                                    <article
-                                        key={card.title}
-                                        className="group relative overflow-hidden rounded-2xl border bg-[#141414] p-5 transition hover:-translate-y-1"
-                                        style={{
-                                            borderColor: card.border,
-                                            boxShadow: `0 0 0 1px ${card.soft}`,
-                                        }}
-                                    >
-                                        <div className="flex items-start gap-3">
-                                            <div
-                                                className="flex size-12 shrink-0 items-center justify-center rounded-full border bg-white"
-                                                style={{
-                                                    borderColor: card.accent,
-                                                    background: card.playStore ? '#ffffff' : card.soft,
-                                                    color: card.accent,
-                                                }}
-                                            >
-                                                {card.playStore ? (
-                                                    <GooglePlayIcon className="size-7" />
-                                                ) : card.logo ? (
-                                                    <img
-                                                        src={card.logo}
-                                                        alt={card.subtitle}
-                                                        className="size-7 object-contain"
-                                                    />
-                                                ) : (
-                                                    <card.icon className="size-5" />
-                                                )}
-                                            </div>
-                                            <div className="min-w-0">
-                                                <h3 className="text-lg font-bold text-white">{card.title}</h3>
-                                                <p className="text-sm font-semibold" style={{ color: card.accent }}>
-                                                    {card.subtitle}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <p className="mt-4 text-sm leading-relaxed text-neutral-400">
-                                            {card.desc}
-                                        </p>
-                                        <div
-                                            className="mt-4 flex justify-end text-lg font-bold transition group-hover:translate-x-1"
-                                            style={{ color: card.accent }}
-                                            aria-hidden
-                                        >
-                                            →
-                                        </div>
-                                    </article>
-                                ))}
-                            </div>
+                        <div className="max-w-3xl">
+                            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+                                A complete gaming business solution
+                            </h2>
+                            <p className="mt-4 text-base leading-relaxed text-neutral-400 sm:text-lg">
+                                DG Ad Space helps entrepreneurs and creators transform their gaming ideas into scalable digital businesses. We provide end-to-end solutions, from game development and Play Store publishing to user acquisition and long-term growth strategies.
+                            </p>
                         </div>
                     </section>
 
