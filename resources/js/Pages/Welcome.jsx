@@ -434,49 +434,46 @@ export default function Welcome() {
                 </header>
 
                 <main>
-                    {/* Only highlight strip — nav ke bilkul neeche */}
-                    <section id="highlights" className="border-b border-white/10 bg-[#111111] py-6 md:py-8">
-                        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 px-4 sm:grid-cols-2 md:px-8 lg:grid-cols-4">
+                    {/* Only highlight strip — nav ke bilkul neeche (compact height) */}
+                    <section id="highlights" className="border-b border-white/10 bg-[#111111] py-3 md:py-3.5">
+                        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-2 px-4 sm:grid-cols-2 md:px-8 lg:grid-cols-4">
                             {featureCards.map((card) => (
                                 <article
                                     key={card.title}
-                                    className="group relative overflow-hidden rounded-2xl border bg-[#141414] p-4 transition hover:-translate-y-0.5"
+                                    className="group flex items-center gap-2.5 overflow-hidden rounded-xl border bg-[#141414] px-3 py-2.5 transition hover:-translate-y-0.5"
                                     style={{
                                         borderColor: card.border,
-                                        boxShadow: `0 0 20px ${card.soft}`,
+                                        boxShadow: `0 0 12px ${card.soft}`,
                                     }}
                                 >
-                                    <div className="flex items-start gap-3">
-                                        <div
-                                            className="flex size-11 shrink-0 items-center justify-center rounded-full border"
-                                            style={{
-                                                borderColor: card.accent,
-                                                background: card.playStore ? '#ffffff' : card.soft,
-                                                color: card.accent,
-                                            }}
-                                        >
-                                            {card.playStore ? (
-                                                <GooglePlayIcon className="size-6" />
-                                            ) : (
-                                                <card.icon className="size-5" />
-                                            )}
+                                    <div
+                                        className="flex size-8 shrink-0 items-center justify-center rounded-full border"
+                                        style={{
+                                            borderColor: card.accent,
+                                            background: card.playStore ? '#ffffff' : card.soft,
+                                            color: card.accent,
+                                        }}
+                                    >
+                                        {card.playStore ? (
+                                            <GooglePlayIcon className="size-4" />
+                                        ) : (
+                                            <card.icon className="size-3.5" />
+                                        )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-1.5">
+                                            <h3 className="truncate text-sm font-bold text-white">{card.title}</h3>
+                                            <span
+                                                className="text-xs font-bold transition group-hover:translate-x-0.5"
+                                                style={{ color: card.accent }}
+                                                aria-hidden
+                                            >
+                                                →
+                                            </span>
                                         </div>
-                                        <div className="min-w-0 flex-1">
-                                            <h3 className="text-base font-bold text-white">{card.title}</h3>
-                                            <p className="text-xs font-semibold" style={{ color: card.accent }}>
-                                                {card.subtitle}
-                                            </p>
-                                            <p className="mt-2 text-xs leading-relaxed text-neutral-400">
-                                                {card.desc}
-                                            </p>
-                                        </div>
-                                        <span
-                                            className="mt-1 text-base font-bold transition group-hover:translate-x-0.5"
-                                            style={{ color: card.accent }}
-                                            aria-hidden
-                                        >
-                                            →
-                                        </span>
+                                        <p className="truncate text-[11px] font-semibold leading-tight" style={{ color: card.accent }}>
+                                            {card.subtitle}
+                                        </p>
                                     </div>
                                 </article>
                             ))}
