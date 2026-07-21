@@ -25,9 +25,9 @@ import { heroBannerImage, landingBanners } from '../data/appImages';
 
 const navLinks = [
     { href: '#about', label: 'About' },
+    { href: '#pricing', label: 'Pricing' },
     { href: '#services', label: 'Services' },
     { href: '#how-it-works', label: 'Process' },
-    { href: '#pricing', label: 'Pricing' },
     { href: '#faq', label: 'FAQ' },
     { href: '#contact', label: 'Contact' },
 ];
@@ -558,6 +558,92 @@ export default function Welcome() {
                         </div>
                     </section>
 
+                    {/* Pricing — nav 2nd section */}
+                    <section id="pricing" className="mx-auto max-w-7xl px-4 py-16 md:px-8">
+                        <SectionHeading
+                            title="Pricing"
+                            highlight="Plans"
+                            subtitle="Choose the package that matches your business goals."
+                        />
+                        <div className="grid gap-5 lg:grid-cols-3">
+                            {pricing.map((plan) => (
+                                <article
+                                    key={plan.name}
+                                    className={`overflow-hidden rounded-2xl border ${
+                                        plan.featured
+                                            ? 'border-[#ff5c1a] bg-[#141414] shadow-xl ring-1 ring-[#ff5c1a]/30'
+                                            : 'border-white/10 bg-[#141414]'
+                                    }`}
+                                >
+                                    <img
+                                        src={plan.banner}
+                                        alt={`${plan.name} banner`}
+                                        className="h-36 w-full object-cover sm:h-40"
+                                    />
+                                    <div className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="text-lg font-bold text-white">{plan.name}</h3>
+                                            <span
+                                                className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
+                                                    plan.featured
+                                                        ? 'bg-[#ff5c1a] text-white'
+                                                        : 'bg-white/10 text-neutral-300'
+                                                }`}
+                                            >
+                                                {plan.tag}
+                                            </span>
+                                        </div>
+                                        <div className="mt-4 rounded-xl border border-white/10 bg-[#0a0a0a] p-4">
+                                            <div className="flex items-end justify-between gap-3">
+                                                <div>
+                                                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-500">
+                                                        Market Rate
+                                                    </p>
+                                                    <p className="relative mt-1 inline-block text-lg font-semibold text-neutral-500">
+                                                        <span className="line-through decoration-[#ff5c1a] decoration-2">
+                                                            {plan.marketPrice}
+                                                        </span>
+                                                        <span
+                                                            aria-hidden
+                                                            className="pointer-events-none absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 rotate-[-8deg] bg-[#ff5c1a]"
+                                                        />
+                                                    </p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#ff5c1a]">
+                                                        Our Price
+                                                    </p>
+                                                    <p className="mt-1 text-3xl font-extrabold text-white">
+                                                        {plan.price}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ul className="mt-5 space-y-2.5">
+                                            {plan.features.map((feature) => (
+                                                <li key={feature} className="flex items-start gap-2 text-sm text-neutral-400">
+                                                    <BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#ff5c1a]" />
+                                                    {feature}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <a
+                                            href={`${whatsappBaseLink}?text=${encodeURIComponent(`Hi DG Ad Space, I want the ${plan.name}.`)}`}
+                                            className={`mt-6 w-full ${
+                                                plan.featured
+                                                    ? 'juego-btn'
+                                                    : 'juego-btn-outline'
+                                            }`}
+                                        >
+                                            <Briefcase className="size-4" />
+                                            Choose Plan
+                                        </a>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </section>
+
                     {/* Extra banners */}
                     <section className="mx-auto max-w-7xl px-4 py-14 md:px-8">
                         <div className="mb-8 text-center">
@@ -756,92 +842,6 @@ export default function Welcome() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </section>
-
-                    {/* Pricing */}
-                    <section id="pricing" className="mx-auto max-w-7xl px-4 py-16 md:px-8">
-                        <SectionHeading
-                            title="Pricing"
-                            highlight="Plans"
-                            subtitle="Choose the package that matches your business goals."
-                        />
-                        <div className="grid gap-5 lg:grid-cols-3">
-                            {pricing.map((plan) => (
-                                <article
-                                    key={plan.name}
-                                    className={`overflow-hidden rounded-2xl border ${
-                                        plan.featured
-                                            ? 'border-[#ff5c1a] bg-[#141414] shadow-xl ring-1 ring-[#ff5c1a]/30'
-                                            : 'border-white/10 bg-[#141414]'
-                                    }`}
-                                >
-                                    <img
-                                        src={plan.banner}
-                                        alt={`${plan.name} banner`}
-                                        className="h-36 w-full object-cover sm:h-40"
-                                    />
-                                    <div className="p-6">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="text-lg font-bold text-white">{plan.name}</h3>
-                                            <span
-                                                className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
-                                                    plan.featured
-                                                        ? 'bg-[#ff5c1a] text-white'
-                                                        : 'bg-white/10 text-neutral-300'
-                                                }`}
-                                            >
-                                                {plan.tag}
-                                            </span>
-                                        </div>
-                                        <div className="mt-4 rounded-xl border border-white/10 bg-[#0a0a0a] p-4">
-                                            <div className="flex items-end justify-between gap-3">
-                                                <div>
-                                                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-500">
-                                                        Market Rate
-                                                    </p>
-                                                    <p className="relative mt-1 inline-block text-lg font-semibold text-neutral-500">
-                                                        <span className="line-through decoration-[#ff5c1a] decoration-2">
-                                                            {plan.marketPrice}
-                                                        </span>
-                                                        <span
-                                                            aria-hidden
-                                                            className="pointer-events-none absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 rotate-[-8deg] bg-[#ff5c1a]"
-                                                        />
-                                                    </p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#ff5c1a]">
-                                                        Our Price
-                                                    </p>
-                                                    <p className="mt-1 text-3xl font-extrabold text-white">
-                                                        {plan.price}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul className="mt-5 space-y-2.5">
-                                            {plan.features.map((feature) => (
-                                                <li key={feature} className="flex items-start gap-2 text-sm text-neutral-400">
-                                                    <BadgeCheck className="mt-0.5 size-4 shrink-0 text-[#ff5c1a]" />
-                                                    {feature}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <a
-                                            href={`${whatsappBaseLink}?text=${encodeURIComponent(`Hi DG Ad Space, I want the ${plan.name}.`)}`}
-                                            className={`mt-6 w-full ${
-                                                plan.featured
-                                                    ? 'juego-btn'
-                                                    : 'juego-btn-outline'
-                                            }`}
-                                        >
-                                            <Briefcase className="size-4" />
-                                            Choose Plan
-                                        </a>
-                                    </div>
-                                </article>
-                            ))}
                         </div>
                     </section>
 
