@@ -163,6 +163,64 @@ class PurchaseService
         });
     }
 
+    /**
+     * Admin: company / offline sale — create paid order and run 6-level income.
+     * If buyer has no referral (referred_by), purchase is saved but no income is paid.
+     *
+     * @return array{purchase: GamePurchase, incomes_count: int, skipped_no_referral: bool}
+     */
+    public function runCompanySaleLevelIncome(
+        User $buyer,
+        float $amount,
+        ?string $productName = null,
+        ?string $notes = null
+    ): array {
+        return DB::transaction(function () use ($buyer, $amount, $productName, $notes) {
+            $buyer->loadMissing('sponsor');
+
+            $purchase = GamePurchase::create([
+                'order_id' => 'CMP-'.strtoupper(Str::random(10)),
+                'user_id' => $buyer->id,
+                'game_name' => $productName ?: 'Company Product Sale',
+                'game_category' => 'Company Sale',
+                'amount' => $amount,
+                'status' => 'paid',
+                'payment_method' => 'Company / Admin',
+                'paid_at' => now(),
+                'notes' => $notes ?: 'Admin manually ran level income for company sale.',
+            ]);
+
+            Payment::create([
+                'user_id' => $buyer->id,
+                'game_purchase_id' => $purchase->id,
+                'transaction_id' => 'ADMIN-'.strtoupper(Str::random(12)),
+                'amount' => $amount,
+                'method' => 'Company / Admin',
+                'status' => 'success',
+                'meta' => [
+                    'source' => 'admin_level_income_run',
+                    'run_at' => now()->toDateTimeString(),
+                ],
+            ]);
+
+            if (! $buyer->referred_by || ! $buyer->sponsor) {
+                return [
+                    'purchase' => $purchase->fresh(['payment', 'user']),
+                    'incomes_count' => 0,
+                    'skipped_no_referral' => true,
+                ];
+            }
+
+            $this->distributeLevelIncome($buyer, $purchase);
+
+            return [
+                'purchase' => $purchase->fresh(['payment', 'user', 'levelIncomes']),
+                'incomes_count' => $purchase->levelIncomes()->count(),
+                'skipped_no_referral' => false,
+            ];
+        });
+    }
+
     public function distributeLevelIncome(User $buyer, GamePurchase $purchase): void
     {
         $current = $buyer->sponsor;

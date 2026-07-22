@@ -1,0 +1,93 @@
+/* DG AD SPACE — Premium Filament Admin */
+:root {
+    --dg-orange: #ff5c1a;
+    --dg-orange-soft: rgba(255, 92, 26, 0.14);
+    --dg-blue: #1aa3ff;
+}
+
+.fi-body {
+    background:
+        radial-gradient(circle at 10% -10%, rgba(255, 92, 26, 0.14), transparent 42%),
+        radial-gradient(circle at 95% 0%, rgba(26, 163, 255, 0.1), transparent 36%),
+        #0b1220 !important;
+}
+
+.fi-simple-page,
+.fi-simple-main {
+    background: transparent !important;
+}
+
+.fi-logo {
+    filter: drop-shadow(0 0 18px rgba(26, 163, 255, 0.25));
+}
+
+.fi-sidebar {
+    background: linear-gradient(180deg, #0f172a 0%, #0b1220 100%) !important;
+    border-right: 1px solid rgba(148, 163, 184, 0.12) !important;
+}
+
+.fi-sidebar-header {
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12) !important;
+}
+
+.fi-topbar {
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(11, 18, 32, 0.82) !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12) !important;
+}
+
+.fi-sidebar-item-button {
+    border-radius: 0.75rem !important;
+}
+
+.fi-sidebar-item-active > .fi-sidebar-item-button,
+.fi-sidebar-item-button:hover {
+    background: var(--dg-orange-soft) !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-label,
+.fi-sidebar-item-active .fi-icon {
+    color: #ff9a66 !important;
+}
+
+.fi-header-heading {
+    letter-spacing: -0.03em;
+    font-weight: 800 !important;
+}
+
+.fi-section,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-fo-field-wrp,
+.fi-simple-card {
+    border-radius: 1rem !important;
+}
+
+.fi-wi-stats-overview-stat {
+    border: 1px solid rgba(148, 163, 184, 0.14) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28) !important;
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fi-wi-stats-overview-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(255, 92, 26, 0.12) !important;
+}
+
+.fi-btn-primary,
+.fi-ac-btn-action.fi-color-primary {
+    box-shadow: 0 8px 20px rgba(255, 92, 26, 0.28);
+}
+
+.fi-login-form,
+.fi-simple-card {
+    border: 1px solid rgba(148, 163, 184, 0.16) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45) !important;
+    backdrop-filter: blur(10px);
+}
+
+.fi-ta-row:hover {
+    background: rgba(255, 92, 26, 0.05) !important;
+}

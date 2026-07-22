@@ -17,7 +17,10 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserResource extends Resource
 {
@@ -72,6 +75,24 @@ class UserResource extends Resource
                 TextColumn::make('created_at')->dateTime()->sortable()->label('Registered'),
             ])
             ->defaultSort('created_at', 'desc')
+            ->filters([
+                Filter::make('bought_product')
+                    ->label('Bought product')
+                    ->query(fn (Builder $query): Builder => $query->whereHas(
+                        'purchases',
+                        fn (Builder $q): Builder => $q->where('status', 'paid')
+                    )),
+                Filter::make('has_referral')
+                    ->label('Has referral')
+                    ->query(fn (Builder $query): Builder => $query->whereNotNull('referred_by')),
+                Filter::make('no_referral')
+                    ->label('No referral')
+                    ->query(fn (Builder $query): Builder => $query->whereNull('referred_by')),
+                TernaryFilter::make('is_admin')->label('Admin'),
+                Filter::make('registered_today')
+                    ->label('Registered today')
+                    ->query(fn (Builder $query): Builder => $query->whereDate('created_at', today())),
+            ])
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),

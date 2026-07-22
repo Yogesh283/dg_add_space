@@ -1,0 +1,37 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+/* Premium DG AD SPACE admin overrides (used when vite theme builds with Tailwind v4) */
+.fi-body {
+    background:
+        radial-gradient(circle at 12% 0%, rgba(255, 92, 26, 0.12), transparent 40%),
+        radial-gradient(circle at 90% 10%, rgba(26, 163, 255, 0.08), transparent 35%),
+        #0b1220;
+}
+
+.fi-sidebar {
+    background: linear-gradient(180deg, #0f172a 0%, #111827 100%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fi-topbar {
+    backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-button,
+.fi-sidebar-item-button:hover {
+    background: rgba(255, 92, 26, 0.14) !important;
+}
+
+.fi-wi-stats-overview-stat {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.fi-header-heading {
+    letter-spacing: -0.03em;
+}

@@ -12,8 +12,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class GamePurchaseResource extends Resource
 {
@@ -76,6 +78,14 @@ class GamePurchaseResource extends Resource
                     'paid' => 'Paid',
                     'rejected' => 'Rejected',
                 ]),
+                Filter::make('today')
+                    ->label('Paid / created today')
+                    ->query(fn (Builder $query): Builder => $query->where(function (Builder $q): void {
+                        $q->whereDate('paid_at', today())
+                            ->orWhere(function (Builder $q2): void {
+                                $q2->whereNull('paid_at')->whereDate('created_at', today());
+                            });
+                    })),
             ])
             ->recordActions([
                 ViewAction::make(),
