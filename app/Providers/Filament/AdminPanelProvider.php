@@ -69,9 +69,9 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->spa()
             ->navigationGroups([
-                NavigationGroup::make('Main Data')->collapsed(false),
-                NavigationGroup::make('Income')->collapsed(false),
-                NavigationGroup::make('Support')->collapsed(false),
+                NavigationGroup::make('Main Data')->collapsible(false),
+                NavigationGroup::make('Income')->collapsible(false),
+                NavigationGroup::make('Support')->collapsible(false),
             ])
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
