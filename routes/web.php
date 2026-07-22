@@ -25,6 +25,20 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/services', function () {
+    $addons = GameAddon::query()
+        ->where('is_active', true)
+        ->orderBy('sort_order')
+        ->orderBy('name')
+        ->get()
+        ->map(fn (GameAddon $addon) => $addon->toStoreArray())
+        ->values();
+
+    return Inertia::render('Services', [
+        'addons' => $addons,
+    ]);
+})->name('services');
+
 Route::get('/game-store', function () {
     $games = Game::query()
         ->where('is_active', true)
@@ -34,7 +48,13 @@ Route::get('/game-store', function () {
         ->map(fn (Game $game) => $game->toStoreArray())
         ->values();
 
-    $categories = $games->pluck('category')->filter()->unique()->values();
+    return Inertia::render('GameStore', [
+        'games' => $games,
+    ]);
+})->name('game-store');
+
+Route::get('/game-store/{game:slug}', function (Game $game) {
+    abort_unless($game->is_active, 404);
 
     $addons = GameAddon::query()
         ->where('is_active', true)
@@ -44,12 +64,21 @@ Route::get('/game-store', function () {
         ->map(fn (GameAddon $addon) => $addon->toStoreArray())
         ->values();
 
-    return Inertia::render('GameStore', [
-        'games' => $games,
-        'categories' => $categories,
+    $related = Game::query()
+        ->where('is_active', true)
+        ->where('id', '!=', $game->id)
+        ->orderBy('sort_order')
+        ->limit(4)
+        ->get()
+        ->map(fn (Game $item) => $item->toStoreArray())
+        ->values();
+
+    return Inertia::render('GameProduct', [
+        'game' => $game->toStoreArray(),
         'addons' => $addons,
+        'related' => $related,
     ]);
-})->name('game-store');
+})->name('game-store.show');
 
 Route::post('/inquiries', [InquiryController::class, 'store'])->name('inquiries.store');
 

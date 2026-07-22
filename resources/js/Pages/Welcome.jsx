@@ -27,7 +27,7 @@ const navLinks = [
     { href: '#about', label: 'About' },
     { href: '#pricing', label: 'Pricing' },
     { href: '#income', label: 'Income' },
-    { href: '#services', label: 'Services' },
+    { href: '/services', label: 'Services' },
     { href: '#how-it-works', label: 'Process' },
     { href: '#faq', label: 'FAQ' },
     { href: '#contact', label: 'Contact' },
@@ -517,7 +517,7 @@ export default function Welcome({ featuredGame = null }) {
                                         <Store className="size-4" />
                                         Game Store
                                     </a>
-                                    <a href="#services" className="juego-btn-outline">
+                                    <a href="/services" className="juego-btn-outline">
                                         View Services
                                     </a>
                                     <a href="#contact" className="juego-btn-outline">
@@ -1049,7 +1049,7 @@ export default function Welcome({ featuredGame = null }) {
                             <p className="mt-3 text-sm text-neutral-600">Your Game. Our Work. Your Income.</p>
                         </div>
                         <div className="flex flex-wrap gap-4 text-sm text-neutral-600">
-                            <a href="#services" className="hover:text-[#ff5c1a]">Services</a>
+                            <a href="/services" className="hover:text-[#ff5c1a]">Services</a>
                             <a href="#pricing" className="hover:text-[#ff5c1a]">Pricing</a>
                             <a href="/game-store" className="hover:text-[#ff5c1a]">Game Store</a>
                             <a href="#contact" className="hover:text-[#ff5c1a]">Contact</a>

@@ -81,6 +81,7 @@ class Game extends Model
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'price' => (float) $this->price,
             'category' => $this->category,
             'tech' => $this->tech,
