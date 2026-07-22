@@ -18,7 +18,7 @@ class LatestInquiries extends TableWidget
 
     protected int | string | array $columnSpan = 'full';
 
-    protected static ?string $heading = 'Latest website inquiries (with IP)';
+    protected static ?string $heading = 'Latest website inquiries (IP + Country)';
 
     public function table(Table $table): Table
     {
@@ -32,6 +32,8 @@ class LatestInquiries extends TableWidget
                 TextColumn::make('phone')->searchable(),
                 TextColumn::make('email')->searchable(),
                 TextColumn::make('ip_address')->label('IP')->copyable()->placeholder('—'),
+                TextColumn::make('country')->label('Country')->placeholder('—')
+                    ->description(fn (Inquiry $record) => $record->country_code ?: null),
                 TextColumn::make('project_type')->placeholder('—')->toggleable(),
                 TextColumn::make('status')->badge(),
             ])

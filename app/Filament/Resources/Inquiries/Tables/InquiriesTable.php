@@ -45,6 +45,12 @@ class InquiriesTable
                     ->searchable()
                     ->copyable()
                     ->placeholder('—'),
+                TextColumn::make('country')
+                    ->label('Country')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('—')
+                    ->description(fn ($record) => $record->country_code ?: null),
                 TextColumn::make('created_at')
                     ->dateTime('d M Y, h:i A')
                     ->sortable(),
@@ -57,6 +63,18 @@ class InquiriesTable
                         'in_progress' => 'In Progress',
                         'closed' => 'Closed',
                     ]),
+                SelectFilter::make('country_code')
+                    ->label('Country')
+                    ->options(fn (): array => \App\Models\Inquiry::query()
+                        ->whereNotNull('country_code')
+                        ->where('country_code', '!=', '')
+                        ->orderBy('country')
+                        ->get(['country', 'country_code'])
+                        ->unique('country_code')
+                        ->mapWithKeys(fn ($row) => [
+                            $row->country_code => ($row->country ?: $row->country_code).' ('.$row->country_code.')',
+                        ])
+                        ->all()),
                 Filter::make('today')
                     ->label('Today')
                     ->query(fn (Builder $query): Builder => $query->whereDate('created_at', today())),

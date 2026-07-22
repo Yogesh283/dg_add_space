@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\InquirySubmittedMail;
 use App\Models\Inquiry;
+use App\Services\GeoIpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -11,7 +12,7 @@ use Throwable;
 
 class InquiryController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, GeoIpService $geoIp)
     {
         $validated = $request->validate([
             'inquiry_name' => ['required', 'string', 'max:255'],
@@ -32,6 +33,9 @@ class InquiryController extends Controller
             ? $request->file('attachment')->store('inquiries', 'public')
             : null;
 
+        $ip = $request->ip();
+        $location = $geoIp->resolve($request, $ip);
+
         $inquiry = Inquiry::create([
             'inquiry_name' => $validated['inquiry_name'],
             'phone' => $validated['phone'],
@@ -41,7 +45,9 @@ class InquiryController extends Controller
             'message' => $validated['message'],
             'attachment_path' => $attachmentPath,
             'status' => 'new',
-            'ip_address' => $request->ip(),
+            'ip_address' => $ip,
+            'country' => $location['country'],
+            'country_code' => $location['country_code'],
             'user_agent' => substr((string) $request->userAgent(), 0, 500),
         ]);
 

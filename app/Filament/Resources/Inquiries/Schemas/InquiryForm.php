@@ -51,6 +51,14 @@ class InquiryForm
                     ->label('IP Address')
                     ->disabled()
                     ->dehydrated(false),
+                TextInput::make('country')
+                    ->label('Country')
+                    ->disabled()
+                    ->dehydrated(false),
+                TextInput::make('country_code')
+                    ->label('Country Code')
+                    ->disabled()
+                    ->dehydrated(false),
             ]);
     }
 }

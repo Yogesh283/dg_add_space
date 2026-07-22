@@ -40,6 +40,12 @@ class InquirySubmittedMail extends Mailable
             .'<p style="color:#ddd;margin:6px 0"><strong>Phone:</strong> '.e($i->phone).'</p>'
             .'<p style="color:#ddd;margin:6px 0"><strong>Project Type:</strong> '.e($i->project_type ?: '—').'</p>'
             .'<p style="color:#ddd;margin:6px 0"><strong>Budget:</strong> '.e($i->project_budget ?: '—').'</p>'
+            .'<p style="color:#ddd;margin:6px 0"><strong>IP:</strong> '.e($i->ip_address ?: '—').'</p>'
+            .'<p style="color:#ddd;margin:6px 0"><strong>Country:</strong> '.e(
+                $i->country
+                    ? $i->country.($i->country_code ? ' ('.$i->country_code.')' : '')
+                    : '—'
+            ).'</p>'
             .'<hr style="border:none;border-top:1px solid #333;margin:16px 0">'
             .'<p style="color:#aaa;margin:0 0 8px"><strong>Query / Message:</strong></p>'
             .'<p style="color:#fff;white-space:pre-wrap;line-height:1.5">'.e($i->message).'</p>'
