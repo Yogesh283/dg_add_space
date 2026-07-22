@@ -13,6 +13,7 @@ use App\Filament\Resources\Payments\PaymentResource;
 use App\Filament\Resources\SupportTickets\SupportTicketResource;
 use App\Filament\Resources\Users\UserResource;
 use App\Filament\Widgets\AdminStatsOverview;
+use App\Filament\Widgets\LatestInquiries;
 use App\Filament\Widgets\LatestLevelIncomes;
 use App\Filament\Widgets\LatestPaidOrders;
 use Filament\Enums\ThemeMode;
@@ -153,6 +154,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->widgets([
                 AdminStatsOverview::class,
+                LatestInquiries::class,
                 LatestPaidOrders::class,
                 LatestLevelIncomes::class,
                 AccountWidget::class,

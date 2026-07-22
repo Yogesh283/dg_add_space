@@ -18,5 +18,7 @@ class Inquiry extends Model
         'message',
         'attachment_path',
         'status',
+        'ip_address',
+        'user_agent',
     ];
 }

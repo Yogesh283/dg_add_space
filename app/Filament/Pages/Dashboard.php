@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\AdminStatsOverview;
+use App\Filament\Widgets\LatestInquiries;
 use App\Filament\Widgets\LatestLevelIncomes;
 use App\Filament\Widgets\LatestPaidOrders;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -14,6 +15,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             AdminStatsOverview::class,
+            LatestInquiries::class,
             LatestPaidOrders::class,
             LatestLevelIncomes::class,
             AccountWidget::class,

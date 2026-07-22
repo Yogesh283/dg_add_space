@@ -6,8 +6,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class InquiriesTable
 {
@@ -38,6 +40,11 @@ class InquiriesTable
                 TextColumn::make('status')
                     ->badge()
                     ->sortable(),
+                TextColumn::make('ip_address')
+                    ->label('IP Address')
+                    ->searchable()
+                    ->copyable()
+                    ->placeholder('—'),
                 TextColumn::make('created_at')
                     ->dateTime('d M Y, h:i A')
                     ->sortable(),
@@ -50,6 +57,9 @@ class InquiriesTable
                         'in_progress' => 'In Progress',
                         'closed' => 'Closed',
                     ]),
+                Filter::make('today')
+                    ->label('Today')
+                    ->query(fn (Builder $query): Builder => $query->whereDate('created_at', today())),
             ])
             ->recordActions([
                 EditAction::make(),

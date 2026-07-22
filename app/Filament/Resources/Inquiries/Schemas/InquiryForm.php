@@ -47,6 +47,10 @@ class InquiryForm
                     ])
                     ->default('new')
                     ->required(),
+                TextInput::make('ip_address')
+                    ->label('IP Address')
+                    ->disabled()
+                    ->dehydrated(false),
             ]);
     }
 }

@@ -41,6 +41,8 @@ class InquiryController extends Controller
             'message' => $validated['message'],
             'attachment_path' => $attachmentPath,
             'status' => 'new',
+            'ip_address' => $request->ip(),
+            'user_agent' => substr((string) $request->userAgent(), 0, 500),
         ]);
 
         try {

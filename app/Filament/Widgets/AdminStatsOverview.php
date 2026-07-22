@@ -3,10 +3,12 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Resources\GamePurchases\GamePurchaseResource;
+use App\Filament\Resources\Inquiries\InquiryResource;
 use App\Filament\Resources\LevelIncomes\LevelIncomeResource;
 use App\Filament\Resources\SupportTickets\SupportTicketResource;
 use App\Filament\Resources\Users\UserResource;
 use App\Models\GamePurchase;
+use App\Models\Inquiry;
 use App\Models\LevelIncome;
 use App\Models\Payment;
 use App\Models\SupportTicket;
@@ -52,6 +54,13 @@ class AdminStatsOverview extends StatsOverviewWidget
             $walletTotal = (float) User::query()->sum('wallet_balance');
             $openTickets = SupportTicket::query()->whereIn('status', ['open', 'answered'])->count();
             $paymentsSuccess = (float) Payment::query()->where('status', 'success')->sum('amount');
+            $inquiriesTotal = Inquiry::query()->count();
+            $inquiriesToday = Inquiry::query()->whereDate('created_at', today())->count();
+            $uniqueInquiryIps = Inquiry::query()
+                ->whereNotNull('ip_address')
+                ->where('ip_address', '!=', '')
+                ->distinct()
+                ->count('ip_address');
         } catch (Throwable) {
             return [
                 Stat::make('Dashboard Stats', 'Unavailable')
@@ -66,8 +75,14 @@ class AdminStatsOverview extends StatsOverviewWidget
         $ordersUrl = GamePurchaseResource::getUrl('index');
         $incomesUrl = LevelIncomeResource::getUrl('index');
         $ticketsUrl = SupportTicketResource::getUrl('index');
+        $inquiriesUrl = InquiryResource::getUrl('index');
 
         return [
+            Stat::make('Website Inquiries', (string) $inquiriesTotal)
+                ->description($inquiriesToday.' today • '.$uniqueInquiryIps.' unique IPs — click list')
+                ->color('primary')
+                ->url($inquiriesUrl),
+
             Stat::make('Product Buyers', (string) $productBuyers)
                 ->description('Users who bought — click list')
                 ->color('success')
