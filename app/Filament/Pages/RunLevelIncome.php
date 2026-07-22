@@ -19,6 +19,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Route;
 use UnitEnum;
 
 /**
@@ -37,6 +38,13 @@ class RunLevelIncome extends Page
     protected static ?int $navigationSort = 4;
 
     protected static ?string $slug = 'run-level-income';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        // Avoid crashing the whole admin sidebar if route cache is stale.
+        return parent::shouldRegisterNavigation()
+            && Route::has(static::getRouteName());
+    }
 
     /**
      * @var array<string, mixed>|null

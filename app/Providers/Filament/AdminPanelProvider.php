@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
+use App\Filament\Pages\RunLevelIncome;
 use App\Filament\Widgets\AdminStatsOverview;
 use App\Filament\Widgets\LatestLevelIncomes;
 use App\Filament\Widgets\LatestPaidOrders;
@@ -74,6 +75,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                RunLevelIncome::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
