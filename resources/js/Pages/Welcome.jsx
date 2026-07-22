@@ -323,6 +323,11 @@ export default function Welcome({ featuredGame = null }) {
                     name="description"
                     content="DG Ad Space develops your game, publishes it on Google Play Store, integrates Google AdMob, and grows your audience through digital marketing."
                 />
+                <meta property="og:title" content="DG AD SPACE" />
+                <meta
+                    property="og:description"
+                    content="DG Ad Space develops your game, publishes it on Google Play Store, integrates Google AdMob, and grows your audience through digital marketing."
+                />
             </Head>
 
             <div className="theme-light min-h-screen bg-[#f5f7fb] text-neutral-800">

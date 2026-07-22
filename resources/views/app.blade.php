@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'DG AD SPACE') }}</title>
+        <title inertia>DG AD SPACE</title>
 
         <link rel="icon" type="image/png" href="{{ asset('img/app.icon.png') }}">
         <link rel="shortcut icon" type="image/png" href="{{ asset('img/app.icon.png') }}">
