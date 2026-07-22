@@ -18,6 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class GameAddonResource extends Resource
 {
@@ -32,6 +33,8 @@ class GameAddonResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquaresPlus;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Main Data';
 
     protected static ?int $navigationSort = 2;
 

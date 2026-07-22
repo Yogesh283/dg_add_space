@@ -2,11 +2,19 @@
 
 namespace App\Filament\Resources\GamePurchases;
 
+use App\Filament\Resources\GamePurchases\Pages\CreateGamePurchase;
+use App\Filament\Resources\GamePurchases\Pages\EditGamePurchase;
 use App\Filament\Resources\GamePurchases\Pages\ListGamePurchases;
 use App\Filament\Resources\GamePurchases\Pages\ViewGamePurchase;
 use App\Models\GamePurchase;
 use BackedEnum;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -16,6 +24,8 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+use UnitEnum;
 
 class GamePurchaseResource extends Resource
 {
@@ -31,7 +41,41 @@ class GamePurchaseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
+    protected static string|UnitEnum|null $navigationGroup = 'Main Data';
+
     protected static ?int $navigationSort = 3;
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema->components([
+            TextInput::make('order_id')
+                ->label('Order ID')
+                ->default(fn () => 'ORD-'.strtoupper(Str::random(10)))
+                ->required()
+                ->maxLength(50),
+            Select::make('user_id')
+                ->label('Buyer User')
+                ->relationship('user', 'name')
+                ->searchable()
+                ->preload()
+                ->required(),
+            TextInput::make('game_name')->required()->maxLength(255),
+            TextInput::make('game_category')->maxLength(100),
+            TextInput::make('amount')->label('Amount (₹)')->numeric()->required()->prefix('₹')->minValue(0),
+            Select::make('status')
+                ->options([
+                    'pending_payment' => 'Pending Payment',
+                    'paid' => 'Paid',
+                    'rejected' => 'Rejected',
+                ])
+                ->required()
+                ->default('pending_payment'),
+            TextInput::make('payment_method')->maxLength(50)->placeholder('Razorpay / Company / Admin'),
+            TextInput::make('utr_number')->label('Payment / UTR ID')->maxLength(100),
+            DateTimePicker::make('paid_at')->seconds(false),
+            Textarea::make('notes')->rows(3)->columnSpanFull(),
+        ]);
+    }
 
     public static function infolist(Schema $schema): Schema
     {
@@ -89,6 +133,8 @@ class GamePurchaseResource extends Resource
             ])
             ->recordActions([
                 ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ]);
     }
 
@@ -96,7 +142,9 @@ class GamePurchaseResource extends Resource
     {
         return [
             'index' => ListGamePurchases::route('/'),
+            'create' => CreateGamePurchase::route('/create'),
             'view' => ViewGamePurchase::route('/{record}'),
+            'edit' => EditGamePurchase::route('/{record}/edit'),
         ];
     }
 }

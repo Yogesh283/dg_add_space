@@ -2,11 +2,17 @@
 
 namespace App\Filament\Resources\LevelIncomes;
 
+use App\Filament\Resources\LevelIncomes\Pages\CreateLevelIncome;
+use App\Filament\Resources\LevelIncomes\Pages\EditLevelIncome;
 use App\Filament\Resources\LevelIncomes\Pages\ListLevelIncomes;
 use App\Filament\Resources\LevelIncomes\Pages\ViewLevelIncome;
 use App\Models\LevelIncome;
 use BackedEnum;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -33,6 +39,51 @@ class LevelIncomeResource extends Resource
     protected static string|UnitEnum|null $navigationGroup = 'Income';
 
     protected static ?int $navigationSort = 5;
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema->components([
+            Select::make('user_id')
+                ->label('Income To (Upline)')
+                ->relationship('user', 'name')
+                ->searchable()
+                ->preload()
+                ->required(),
+            Select::make('from_user_id')
+                ->label('From Buyer')
+                ->relationship('fromUser', 'name')
+                ->searchable()
+                ->preload()
+                ->required(),
+            Select::make('game_purchase_id')
+                ->label('Order')
+                ->relationship('gamePurchase', 'order_id')
+                ->searchable()
+                ->preload()
+                ->required(),
+            Select::make('level')
+                ->options([
+                    1 => 'Level 1 (10%)',
+                    2 => 'Level 2 (2%)',
+                    3 => 'Level 3 (2%)',
+                    4 => 'Level 4 (2%)',
+                    5 => 'Level 5 (2%)',
+                    6 => 'Level 6 (2%)',
+                ])
+                ->required(),
+            TextInput::make('percent')->numeric()->required()->suffix('%'),
+            TextInput::make('purchase_amount')->numeric()->required()->prefix('₹'),
+            TextInput::make('income_amount')->numeric()->required()->prefix('₹'),
+            Select::make('status')
+                ->options([
+                    'credited' => 'Credited',
+                    'pending' => 'Pending',
+                    'cancelled' => 'Cancelled',
+                ])
+                ->default('credited')
+                ->required(),
+        ]);
+    }
 
     public static function infolist(Schema $schema): Schema
     {
@@ -81,6 +132,8 @@ class LevelIncomeResource extends Resource
                 ]),
                 SelectFilter::make('status')->options([
                     'credited' => 'Credited',
+                    'pending' => 'Pending',
+                    'cancelled' => 'Cancelled',
                 ]),
                 Filter::make('today')
                     ->label('Today')
@@ -88,6 +141,8 @@ class LevelIncomeResource extends Resource
             ])
             ->recordActions([
                 ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ]);
     }
 
@@ -95,7 +150,9 @@ class LevelIncomeResource extends Resource
     {
         return [
             'index' => ListLevelIncomes::route('/'),
+            'create' => CreateLevelIncome::route('/create'),
             'view' => ViewLevelIncome::route('/{record}'),
+            'edit' => EditLevelIncome::route('/{record}/edit'),
         ];
     }
 }

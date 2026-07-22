@@ -15,8 +15,10 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 class SupportTicketResource extends Resource
 {
@@ -27,6 +29,10 @@ class SupportTicketResource extends Resource
     protected static ?string $recordTitleAttribute = 'ticket_no';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Support';
+
+    protected static ?int $navigationSort = 10;
 
     public static function form(Schema $schema): Schema
     {
@@ -66,6 +72,7 @@ class SupportTicketResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ]);
     }
 

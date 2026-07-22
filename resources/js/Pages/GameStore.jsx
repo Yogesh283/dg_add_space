@@ -5,6 +5,7 @@ import {
     MessageCircle,
     Star,
     Store,
+    TrendingUp,
     Users,
     X,
 } from 'lucide-react';
@@ -32,6 +33,21 @@ export default function GameStore({ games = [] }) {
             </Head>
 
             <div className="theme-light min-h-screen bg-[#f5f7fb] text-neutral-800">
+                {auth?.user && (
+                    <div className="bg-gradient-to-r from-[#ff5c1a] via-[#ff7338] to-[#1aa3ff] px-4 py-2.5 text-center shadow-md">
+                        <a
+                            href="/member"
+                            className="inline-flex items-center justify-center gap-2 text-sm font-extrabold tracking-wide text-white"
+                        >
+                            <TrendingUp className="size-4" />
+                            Referral & Earn — Share link, track wallet & level income
+                            <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[11px] font-bold uppercase">
+                                Open Panel
+                            </span>
+                        </a>
+                    </div>
+                )}
+
                 <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/90 backdrop-blur-lg">
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
                         <a href="/" className="inline-flex items-center">
@@ -41,18 +57,31 @@ export default function GameStore({ games = [] }) {
                             <a href="/" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">Home</a>
                             <a href="/services" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">Services</a>
                             <a href="/game-store" className="text-sm font-semibold text-[#ff5c1a]">Game Store</a>
+                            {auth?.user && (
+                                <a href="/member" className="text-sm font-extrabold text-[#ff5c1a] underline decoration-2 underline-offset-4">
+                                    Referral & Earn
+                                </a>
+                            )}
                             <a href="/#pricing" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">Pricing</a>
                             <a href="/#contact" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">Contact</a>
                         </nav>
                         <div className="hidden items-center gap-3 md:flex">
                             {auth?.user ? (
                                 <>
-                                    <a href="/member" className="juego-btn px-4 py-2 text-sm">
-                                        <Users className="size-4" /> Referral & Earn
+                                    <a
+                                        href="/member"
+                                        className="relative inline-flex items-center gap-2 rounded-xl bg-[#ff5c1a] px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_8px_24px_rgba(255,92,26,0.45)] ring-2 ring-[#ff5c1a]/30 ring-offset-2 transition hover:bg-[#ff7338] hover:shadow-[0_10px_28px_rgba(255,92,26,0.55)]"
+                                    >
+                                        <span className="absolute -right-1 -top-1 flex size-3">
+                                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-300 opacity-75" />
+                                            <span className="relative inline-flex size-3 rounded-full bg-amber-400" />
+                                        </span>
+                                        <TrendingUp className="size-4" />
+                                        Referral & Earn
                                     </a>
-                                    <a href="/game-store" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">
+                                    <span className="text-sm font-semibold text-neutral-600">
                                         Hi, {auth.user.name?.split(' ')[0] || 'Member'}
-                                    </a>
+                                    </span>
                                 </>
                             ) : (
                                 <>
@@ -64,9 +93,20 @@ export default function GameStore({ games = [] }) {
                                 <MessageCircle className="size-4" /> WhatsApp
                             </a>
                         </div>
-                        <button type="button" className="rounded-lg border border-neutral-200 p-2 text-neutral-700 lg:hidden" onClick={() => setMenuOpen((v) => !v)}>
-                            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-                        </button>
+                        <div className="flex items-center gap-2 lg:hidden">
+                            {auth?.user && (
+                                <a
+                                    href="/member"
+                                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#ff5c1a] px-3 py-2 text-xs font-extrabold text-white shadow-lg shadow-[#ff5c1a]/30"
+                                >
+                                    <TrendingUp className="size-3.5" />
+                                    Earn
+                                </a>
+                            )}
+                            <button type="button" className="rounded-lg border border-neutral-200 p-2 text-neutral-700" onClick={() => setMenuOpen((v) => !v)}>
+                                {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+                            </button>
+                        </div>
                     </div>
                     {menuOpen && (
                         <div className="border-t border-neutral-200 bg-white px-4 py-4 lg:hidden">
@@ -76,8 +116,14 @@ export default function GameStore({ games = [] }) {
                                 <a href="/game-store" className="rounded-lg px-3 py-2 text-sm font-semibold text-[#ff5c1a]">Game Store</a>
                                 <a href="/#contact" className="rounded-lg px-3 py-2 text-sm font-semibold">Contact</a>
                                 {auth?.user ? (
-                                    <a href="/member" className="rounded-lg bg-[#ff5c1a] px-3 py-2.5 text-center text-sm font-semibold text-white">
-                                        Referral & Earn
+                                    <a
+                                        href="/member"
+                                        className="rounded-xl bg-[#ff5c1a] px-3 py-3 text-center text-sm font-extrabold text-white shadow-lg shadow-[#ff5c1a]/35"
+                                    >
+                                        <span className="inline-flex items-center gap-2">
+                                            <TrendingUp className="size-4" />
+                                            Referral & Earn — Open Now
+                                        </span>
                                     </a>
                                 ) : (
                                     <>
@@ -110,19 +156,50 @@ export default function GameStore({ games = [] }) {
                                 Choose a game → open product page → add/remove services (Development, Play Store, AdMob, Marketing) → checkout.
                             </p>
                             <div className="mt-6 flex flex-wrap gap-3">
-                                <a href="#games" className="juego-btn"><Store className="size-4" /> Browse Games</a>
                                 {auth?.user ? (
-                                    <a href="/member" className="juego-btn-outline">
-                                        <Users className="size-4" /> Referral & Earn
+                                    <a
+                                        href="/member"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-[#ff5c1a] px-6 py-3.5 text-base font-extrabold text-white shadow-[0_10px_30px_rgba(255,92,26,0.4)] ring-4 ring-[#ff5c1a]/20 transition hover:bg-[#ff7338]"
+                                    >
+                                        <TrendingUp className="size-5" />
+                                        Referral & Earn
                                     </a>
-                                ) : (
+                                ) : null}
+                                <a href="#games" className="juego-btn-outline"><Store className="size-4" /> Browse Games</a>
+                                {!auth?.user && (
                                     <>
-                                        <a href="/register" className="juego-btn-outline">Register with Referral</a>
+                                        <a href="/register" className="juego-btn">Register with Referral</a>
                                         <a href="/login" className="juego-btn-outline">Login</a>
                                     </>
                                 )}
                                 <a href="/services" className="juego-btn-outline">View Services</a>
                             </div>
+
+                            {auth?.user && (
+                                <div className="mt-8 max-w-3xl overflow-hidden rounded-2xl border-2 border-[#ff5c1a]/40 bg-gradient-to-r from-[#ff5c1a]/10 via-white to-[#1aa3ff]/10 p-5 shadow-lg md:p-6">
+                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <p className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-[#ff5c1a]">
+                                                <Users className="size-3.5" />
+                                                Your earning panel
+                                            </p>
+                                            <h2 className="mt-1 text-xl font-extrabold text-neutral-900 md:text-2xl">
+                                                Referral & Earn is ready
+                                            </h2>
+                                            <p className="mt-1 text-sm text-neutral-600">
+                                                Copy/share referral link, check wallet, purchases, level income & tickets — same as member main panel.
+                                            </p>
+                                        </div>
+                                        <a
+                                            href="/member"
+                                            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#ff5c1a] px-5 py-3 text-sm font-extrabold text-white shadow-lg shadow-[#ff5c1a]/35 hover:bg-[#ff7338]"
+                                        >
+                                            <TrendingUp className="size-4" />
+                                            Open Referral & Earn
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </section>
 

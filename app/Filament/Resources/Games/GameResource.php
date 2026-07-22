@@ -21,6 +21,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class GameResource extends Resource
 {
@@ -35,6 +36,8 @@ class GameResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPuzzlePiece;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Main Data';
 
     protected static ?int $navigationSort = 1;
 
