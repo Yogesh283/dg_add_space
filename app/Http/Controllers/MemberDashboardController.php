@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GamePurchase;
 use App\Models\SupportTicket;
 use App\Models\TicketReply;
 use App\Services\PurchaseService;
@@ -136,7 +137,18 @@ class MemberDashboardController extends Controller
             'game_category' => ['nullable', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:1'],
             'payment_method' => ['nullable', 'string', 'max:50'],
+            'addon_ids' => ['nullable', 'array'],
+            'addon_ids.*' => ['integer', 'exists:game_addons,id'],
         ]);
+
+        $addonIds = collect($data['addon_ids'] ?? [])->unique()->values();
+        $addons = \App\Models\GameAddon::query()
+            ->whereIn('id', $addonIds)
+            ->where('is_active', true)
+            ->get();
+
+        $addonTotal = (float) $addons->sum('price');
+        $addonNotes = $addons->map(fn ($addon) => $addon->name.' (₹'.number_format((float) $addon->price, 0, '.', ',').')')->implode(', ');
 
         if (! empty($data['game_id'])) {
             $game = \App\Models\Game::query()
@@ -146,19 +158,82 @@ class MemberDashboardController extends Controller
 
             $data['game_name'] = $game->name;
             $data['game_category'] = $game->category;
-            $data['amount'] = (float) $game->price;
+            $data['amount'] = (float) $game->price + $addonTotal;
+        } else {
+            $data['amount'] = (float) $data['amount'] + $addonTotal;
         }
 
-        $purchase = $purchaseService->purchase(
-            $request->user(),
-            $data['game_name'],
-            (float) $data['amount'],
-            $data['game_category'] ?? null,
-            $data['payment_method'] ?? 'UPI'
-        );
+        try {
+            $result = $purchaseService->createPendingRazorpayOrder(
+                $request->user(),
+                $data['game_name'],
+                (float) $data['amount'],
+                $data['game_category'] ?? null,
+                $addonNotes ?: null
+            );
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+        } catch (\Throwable $e) {
+            return back()->withErrors([
+                'payment' => $e->getMessage() ?: 'Unable to start Razorpay payment.',
+            ]);
+        }
+
+        return redirect()
+            ->route('member.pay', $result['purchase'])
+            ->with('success', 'Order created. Complete payment with Razorpay — UPI / Card / NetBanking.');
+    }
+
+    public function showPay(Request $request, GamePurchase $purchase): Response
+    {
+        abort_unless($purchase->user_id === $request->user()->id, 403);
+
+        $razorpayOrderId = data_get($purchase->payment?->meta, 'razorpay_order_id')
+            ?: $purchase->payment?->transaction_id;
+
+        return Inertia::render('Member/PayRazorpay', [
+            'purchase' => $purchase->load('payment'),
+            'razorpay' => [
+                'key' => config('razorpay.key'),
+                'order_id' => $razorpayOrderId,
+                'amount' => (int) round(((float) $purchase->amount) * 100),
+                'currency' => config('razorpay.currency', 'INR'),
+                'name' => 'DG Ad Space',
+                'description' => $purchase->game_name.' — '.$purchase->order_id,
+                'prefill' => [
+                    'name' => $request->user()->name,
+                    'email' => $request->user()->email,
+                    'contact' => $request->user()->phone,
+                ],
+            ],
+        ]);
+    }
+
+    public function verifyRazorpay(Request $request, GamePurchase $purchase, PurchaseService $purchaseService): RedirectResponse
+    {
+        abort_unless($purchase->user_id === $request->user()->id, 403);
+
+        $data = $request->validate([
+            'razorpay_order_id' => ['required', 'string'],
+            'razorpay_payment_id' => ['required', 'string'],
+            'razorpay_signature' => ['required', 'string'],
+        ]);
+
+        try {
+            $purchaseService->verifyRazorpayPayment(
+                $purchase,
+                $data['razorpay_order_id'],
+                $data['razorpay_payment_id'],
+                $data['razorpay_signature']
+            );
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('member.pay', $purchase)
+                ->withErrors(['payment' => $e->getMessage() ?: 'Payment verification failed.']);
+        }
 
         return redirect()
             ->route('member.purchases')
-            ->with('success', 'Purchase successful! Order '.$purchase->order_id.' created. Level income distributed.');
+            ->with('success', 'Payment successful! Order '.$purchase->order_id.' is paid automatically.');
     }
 }

@@ -9,7 +9,8 @@ import {
     ListFilter,
     Menu,
     MessageCircle,
-    Search,
+    Package,
+    ShieldCheck,
     Star,
     Store,
     Users,
@@ -58,24 +59,37 @@ const features = [
 
 const purchaseFlow = [
     'Select Game',
-    'Customize Options',
-    'Review Order',
-    'Secure Payment',
-    'Order Confirmation',
+    'Choose Extra Services',
+    'Pay with Razorpay',
+    'Auto Payment Confirm',
+    'Order Paid',
     'Project Processing',
     'Delivery',
 ];
 
 const paymentMethods = [
-    'Razorpay',
-    'PhonePe',
-    'Google Pay',
+    'Razorpay Auto',
     'UPI',
-    'Debit Card',
-    'Credit Card',
+    'Cards',
     'Net Banking',
-    'International Cards',
-    'UPI QR',
+    'Wallets',
+];
+
+const baseIncluded = [
+    { title: 'Complete Source Code', desc: 'Full project files with ownership after purchase' },
+    { title: 'APK + AAB Build', desc: 'Ready Android package files for testing & publishing' },
+    { title: 'Game Assets', desc: 'Graphics, UI, and media assets included' },
+    { title: 'Documentation', desc: 'Setup and installation guide for your team' },
+    { title: 'Database Setup Guide', desc: 'Backend / Firebase structure documentation' },
+    { title: 'One-Time Setup Support', desc: 'Initial installation and handover support' },
+];
+
+const deliverySteps = [
+    'Order confirmation',
+    'Requirement check',
+    'Customization (if selected)',
+    'QA & delivery',
+    'Handover support',
 ];
 
 const faqs = [
@@ -87,17 +101,52 @@ const faqs = [
     ['Do you provide updates?', 'Yes. Support and update assistance is available as per the selected support package.'],
 ];
 
-export default function GameStore({ games = [], categories = [] }) {
+export default function GameStore({ games = [], categories = [], addons = [] }) {
     const whatsappNumber = '918817788185';
     const whatsappBaseLink = `https://wa.me/${whatsappNumber}`;
-    const { auth, flash } = usePage().props;
+    const { auth, flash, errors } = usePage().props;
     const categoryList = categories.length ? categories : defaultCategories;
-    const [query, setQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
     const [sortBy, setSortBy] = useState('Popularity');
     const [selectedGame, setSelectedGame] = useState(games[0] || null);
+    const [selectedAddonIds, setSelectedAddonIds] = useState([]);
     const [menuOpen, setMenuOpen] = useState(false);
     const [buying, setBuying] = useState(false);
+
+    const selectedAddons = useMemo(
+        () => addons.filter((addon) => selectedAddonIds.includes(addon.id)),
+        [addons, selectedAddonIds]
+    );
+
+    const addonTotal = useMemo(
+        () => selectedAddons.reduce((sum, addon) => sum + Number(addon.price || 0), 0),
+        [selectedAddons]
+    );
+
+    const totalPrice = useMemo(
+        () => Number(selectedGame?.price || 0) + addonTotal,
+        [selectedGame, addonTotal]
+    );
+
+    const toggleAddon = (addonId) => {
+        setSelectedAddonIds((prev) =>
+            prev.includes(addonId) ? prev.filter((id) => id !== addonId) : [...prev, addonId]
+        );
+    };
+
+    const selectAllAddons = () => {
+        setSelectedAddonIds(addons.map((addon) => addon.id));
+    };
+
+    const clearAddons = () => {
+        setSelectedAddonIds([]);
+    };
+
+    const openGameDetails = (game) => {
+        setSelectedGame(game);
+        setSelectedAddonIds([]);
+        document.getElementById('details')?.scrollIntoView({ behavior: 'smooth' });
+    };
 
     const buyGame = (game) => {
         if (!auth?.user) {
@@ -111,7 +160,8 @@ export default function GameStore({ games = [], categories = [] }) {
                 game_id: game.id,
                 game_name: game.name,
                 game_category: game.category,
-                amount: game.price,
+                amount: Number(game.price) + addonTotal,
+                addon_ids: selectedAddonIds,
                 payment_method: 'UPI',
             },
             {
@@ -121,15 +171,7 @@ export default function GameStore({ games = [], categories = [] }) {
     };
 
     const filteredGames = useMemo(() => {
-        let items = games.filter((g) => {
-            const q = query.toLowerCase();
-            const matchesQuery =
-                g.name.toLowerCase().includes(q) ||
-                (g.category || '').toLowerCase().includes(q) ||
-                (g.tech || '').toLowerCase().includes(q);
-            const matchesCategory = activeCategory === 'All' || g.category === activeCategory;
-            return matchesQuery && matchesCategory;
-        });
+        let items = games.filter((g) => activeCategory === 'All' || g.category === activeCategory);
 
         if (sortBy === 'Price') {
             items = [...items].sort((a, b) => a.price - b.price);
@@ -140,7 +182,7 @@ export default function GameStore({ games = [], categories = [] }) {
         }
 
         return items;
-    }, [games, query, activeCategory, sortBy]);
+    }, [games, activeCategory, sortBy]);
 
     return (
         <>
@@ -292,12 +334,20 @@ export default function GameStore({ games = [], categories = [] }) {
                         </div>
                     )}
 
+                    {errors?.payment && (
+                        <div className="mx-auto max-w-7xl px-4 pt-6 md:px-8">
+                            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                                {errors.payment}
+                            </div>
+                        </div>
+                    )}
+
                     <div id="games" className="mx-auto max-w-7xl px-4 py-10 md:px-8">
                         <section className="grid gap-6 lg:grid-cols-[260px_1fr]">
                             <aside className="pro-card h-fit p-4">
                                 <h3 className="inline-flex items-center gap-2 font-bold text-white">
                                     <Filter className="size-4 text-[#ff5c1a]" />
-                                    Search & Filter
+                                    Filter
                                 </h3>
                                 <div className="mt-4">
                                     <label className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
@@ -334,16 +384,7 @@ export default function GameStore({ games = [], categories = [] }) {
                             </aside>
 
                             <div>
-                                <div className="mb-4 flex flex-col gap-3 sm:flex-row">
-                                    <div className="relative flex-1">
-                                        <Search className="pointer-events-none absolute left-3 top-3.5 size-4 text-neutral-500" />
-                                        <input
-                                            value={query}
-                                            onChange={(e) => setQuery(e.target.value)}
-                                            placeholder="Search games..."
-                                            className="w-full rounded-xl border border-white/10 bg-[#141414] py-3 pl-9 pr-3 text-sm text-white placeholder-neutral-500 outline-none focus:border-[#ff5c1a]"
-                                        />
-                                    </div>
+                                <div className="mb-4 flex justify-end">
                                     <div className="relative">
                                         <ListFilter className="pointer-events-none absolute left-3 top-3.5 size-4 text-neutral-500" />
                                         <select
@@ -397,10 +438,7 @@ export default function GameStore({ games = [], categories = [] }) {
                                             <div className="mt-3 grid grid-cols-2 gap-2">
                                                 <button
                                                     type="button"
-                                                    onClick={() => {
-                                                        setSelectedGame(game);
-                                                        document.getElementById('details')?.scrollIntoView({ behavior: 'smooth' });
-                                                    }}
+                                                    onClick={() => openGameDetails(game)}
                                                     className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-white/10"
                                                 >
                                                     View Details
@@ -415,11 +453,10 @@ export default function GameStore({ games = [], categories = [] }) {
                                                 </a>
                                                 <button
                                                     type="button"
-                                                    disabled={buying}
-                                                    onClick={() => buyGame(game)}
-                                                    className="rounded-lg bg-[#ff5c1a] px-3 py-2 text-center text-xs font-semibold text-white hover:bg-[#ff7338] disabled:opacity-70"
+                                                    onClick={() => openGameDetails(game)}
+                                                    className="rounded-lg bg-[#ff5c1a] px-3 py-2 text-center text-xs font-semibold text-white hover:bg-[#ff7338]"
                                                 >
-                                                    {buying ? 'Processing...' : 'Buy Now'}
+                                                    Buy Now
                                                 </button>
                                                 <a
                                                     href={`${whatsappBaseLink}?text=${encodeURIComponent(`Hi, I want customization for ${game.name}.`)}`}
@@ -434,63 +471,276 @@ export default function GameStore({ games = [], categories = [] }) {
 
                                 {filteredGames.length === 0 && (
                                     <div className="pro-card p-8 text-center text-neutral-500">
-                                        No games found for your search.
+                                        No games found for this category.
                                     </div>
                                 )}
                             </div>
                         </section>
 
-                        {/* Details */}
+                        {/* Advanced Product Configurator */}
                         {selectedGame && (
-                        <section id="details" className="pro-card mt-10 p-5 md:p-6">
-                            <h2 className="text-2xl font-bold text-white">
-                                {selectedGame.name} — Product Details
-                            </h2>
-                            <div className="mt-5 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
-                                <div className="space-y-4">
+                        <section id="details" className="mt-10 overflow-hidden rounded-3xl border border-white/10 bg-[#111111]">
+                            <div className="border-b border-white/10 bg-gradient-to-r from-[#ff5c1a]/15 via-transparent to-[#1aa3ff]/10 px-5 py-6 md:px-8">
+                                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff9a66]">
+                                    Enterprise Product Package
+                                </p>
+                                <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                                    <div>
+                                        <h2 className="text-2xl font-extrabold text-white md:text-3xl">
+                                            {selectedGame.name}
+                                        </h2>
+                                        <p className="mt-2 max-w-2xl text-sm text-neutral-400">
+                                            {selectedGame.description ||
+                                                'Professional ready-made Android game package. See what is included, add optional services, and get a clear final quote — like buying from a VIP IT company.'}
+                                        </p>
+                                    </div>
+                                    <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-right">
+                                        <p className="text-[11px] uppercase tracking-wide text-neutral-500">Starting from</p>
+                                        <p className="text-2xl font-extrabold text-[#ff5c1a]">
+                                            ₹{Number(selectedGame.price).toLocaleString('en-IN')}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-neutral-300">
+                                        {selectedGame.category}
+                                    </span>
+                                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-neutral-300">
+                                        {selectedGame.tech || 'Unity'}
+                                    </span>
+                                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-neutral-300">
+                                        {selectedGame.mode || 'Single Player'}
+                                    </span>
+                                    <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-emerald-300">
+                                        Delivery: {selectedGame.delivery || '7-10 days'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
+                                <div className="space-y-6 border-b border-white/10 p-5 md:p-8 lg:border-b-0 lg:border-r">
                                     <img
                                         src={selectedGame.image}
                                         alt={`${selectedGame.name} banner`}
-                                        className="h-72 w-full rounded-xl object-cover"
+                                        className="h-64 w-full rounded-2xl object-cover md:h-72"
                                     />
-                                    <div className="overflow-hidden rounded-xl border border-white/10">
-                                        <div className="relative w-full pt-[56.25%]">
-                                            <iframe
-                                                title="Gameplay Video"
-                                                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-                                                className="absolute inset-0 h-full w-full"
-                                                allowFullScreen
-                                            />
+
+                                    <div>
+                                        <div className="mb-3 flex items-center gap-2">
+                                            <Package className="size-5 text-[#ff5c1a]" />
+                                            <h3 className="text-lg font-bold text-white">What You Get in Base Package</h3>
+                                        </div>
+                                        <p className="mb-4 text-sm text-neutral-400">
+                                            These deliverables are included with every game purchase.
+                                        </p>
+                                        <div className="grid gap-3 sm:grid-cols-2">
+                                            {baseIncluded.map((item) => (
+                                                <div
+                                                    key={item.title}
+                                                    className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
+                                                >
+                                                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-white">
+                                                        <CheckCircle2 className="size-4 text-emerald-400" />
+                                                        {item.title}
+                                                    </p>
+                                                    <p className="mt-1 pl-6 text-xs text-neutral-400">{item.desc}</p>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        <img src={selectedGame.image} alt="Screenshot 1" className="h-24 w-full rounded-lg object-cover" />
-                                        <img src={games[1]?.image || selectedGame.image} alt="Screenshot 2" className="h-24 w-full rounded-lg object-cover" />
-                                        <img src={games[2]?.image || selectedGame.image} alt="Screenshot 3" className="h-24 w-full rounded-lg object-cover" />
+
+                                    <div>
+                                        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                                            <div>
+                                                <h3 className="text-lg font-bold text-white">Add More Services</h3>
+                                                <p className="mt-1 text-sm text-neutral-400">
+                                                    Optional upgrades — select only what you need. Price adds to total.
+                                                </p>
+                                            </div>
+                                            {addons.length > 0 && (
+                                                <div className="flex gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={selectAllAddons}
+                                                        className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-neutral-300 hover:bg-white/5"
+                                                    >
+                                                        Select All
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={clearAddons}
+                                                        className="rounded-lg border border-white/10 px-3 py-1.5 text-xs font-semibold text-neutral-300 hover:bg-white/5"
+                                                    >
+                                                        Clear
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {addons.length > 0 ? (
+                                            <div className="space-y-3">
+                                                {addons.map((addon, index) => {
+                                                    const checked = selectedAddonIds.includes(addon.id);
+                                                    return (
+                                                        <label
+                                                            key={addon.id}
+                                                            className={`flex cursor-pointer items-start gap-3 rounded-2xl border px-4 py-4 transition ${
+                                                                checked
+                                                                    ? 'border-[#ff5c1a]/60 bg-[#ff5c1a]/10 shadow-[0_0_0_1px_rgba(255,92,26,0.25)]'
+                                                                    : 'border-white/10 bg-[#0a0a0a]/70 hover:border-white/25'
+                                                            }`}
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={checked}
+                                                                onChange={() => toggleAddon(addon.id)}
+                                                                className="mt-1 size-4 accent-[#ff5c1a]"
+                                                            />
+                                                            <span className="flex-1">
+                                                                <span className="flex flex-wrap items-center gap-2">
+                                                                    <span className="text-sm font-bold text-white">
+                                                                        {addon.name}
+                                                                    </span>
+                                                                    {index === 0 && (
+                                                                        <span className="rounded-full bg-[#1aa3ff]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#1aa3ff]">
+                                                                            Recommended
+                                                                        </span>
+                                                                    )}
+                                                                    {checked && (
+                                                                        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-300">
+                                                                            Selected
+                                                                        </span>
+                                                                    )}
+                                                                </span>
+                                                                {addon.description && (
+                                                                    <span className="mt-1 block text-xs leading-relaxed text-neutral-400">
+                                                                        {addon.description}
+                                                                    </span>
+                                                                )}
+                                                            </span>
+                                                            <span className="shrink-0 text-right">
+                                                                <span className="block text-sm font-extrabold text-[#ff5c1a]">
+                                                                    +₹{Number(addon.price).toLocaleString('en-IN')}
+                                                                </span>
+                                                                <span className="text-[10px] uppercase tracking-wide text-neutral-500">
+                                                                    Add-on
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="rounded-xl border border-dashed border-white/15 px-4 py-6 text-sm text-neutral-500">
+                                                Extra services will appear here once admin adds them in Game Options.
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <h3 className="mb-3 text-lg font-bold text-white">Delivery Process</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {deliverySteps.map((step, i) => (
+                                                <div
+                                                    key={step}
+                                                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-300"
+                                                >
+                                                    <span className="flex size-5 items-center justify-center rounded-full bg-[#ff5c1a]/20 text-[10px] font-bold text-[#ff5c1a]">
+                                                        {i + 1}
+                                                    </span>
+                                                    {step}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="rounded-xl border border-[#ff5c1a]/30 bg-[#ff5c1a]/5 p-4">
-                                        <h3 className="font-bold text-white">Pricing</h3>
-                                        <ul className="mt-2 space-y-1.5 text-sm text-neutral-300">
-                                            <li>Game Price: ₹{Number(selectedGame.price).toLocaleString('en-IN')}</li>
-                                            <li>Customization Cost: ₹9,999+</li>
-                                            <li>Play Store Publishing Assistance: ₹4,999</li>
-                                            <li>AdMob Integration Assistance: ₹3,999</li>
-                                            <li>Support Package: ₹4,999</li>
-                                            <li className="font-bold text-[#ff5c1a]">
-                                                Total Price: ₹{(Number(selectedGame.price) + 18997).toLocaleString('en-IN')}
-                                            </li>
-                                        </ul>
-                                        <button
-                                            type="button"
-                                            disabled={buying}
-                                            onClick={() => buyGame(selectedGame)}
-                                            className="juego-btn mt-4 w-full disabled:opacity-70"
-                                        >
-                                            <CircleDollarSign className="size-4" />
-                                            {buying ? 'Processing...' : 'Buy Now'}
-                                        </button>
+
+                                <div className="bg-[#0d0d0d] p-5 md:p-8">
+                                    <div className="sticky top-24 space-y-4">
+                                        <div className="rounded-2xl border border-[#ff5c1a]/35 bg-[#ff5c1a]/5 p-5">
+                                            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ff9a66]">
+                                                Order Summary
+                                            </p>
+                                            <h3 className="mt-2 text-xl font-bold text-white">Your Package</h3>
+
+                                            <ul className="mt-4 space-y-2.5 text-sm text-neutral-300">
+                                                <li className="flex justify-between gap-3">
+                                                    <span>{selectedGame.name} (Base)</span>
+                                                    <span className="font-semibold text-white">
+                                                        ₹{Number(selectedGame.price).toLocaleString('en-IN')}
+                                                    </span>
+                                                </li>
+                                                {selectedAddons.length === 0 && (
+                                                    <li className="rounded-lg border border-dashed border-white/10 px-3 py-2 text-xs text-neutral-500">
+                                                        No extra services selected yet.
+                                                    </li>
+                                                )}
+                                                {selectedAddons.map((addon) => (
+                                                    <li key={addon.id} className="flex justify-between gap-3">
+                                                        <span className="text-neutral-400">+ {addon.name}</span>
+                                                        <span>₹{Number(addon.price).toLocaleString('en-IN')}</span>
+                                                    </li>
+                                                ))}
+                                                <li className="flex justify-between gap-3 border-t border-white/10 pt-3 text-base font-extrabold text-[#ff5c1a]">
+                                                    <span>Total Payable</span>
+                                                    <span>₹{totalPrice.toLocaleString('en-IN')}</span>
+                                                </li>
+                                            </ul>
+
+                                            <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-neutral-400">
+                                                <p className="inline-flex items-center gap-2 font-semibold text-neutral-200">
+                                                    <ShieldCheck className="size-3.5 text-emerald-400" />
+                                                    Secure purchase
+                                                </p>
+                                                <p className="mt-1">
+                                                    Source code ownership after payment. Selected services are added to your order notes.
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                disabled={buying}
+                                                onClick={() => buyGame(selectedGame)}
+                                                className="juego-btn mt-4 w-full disabled:opacity-70"
+                                            >
+                                                <CircleDollarSign className="size-4" />
+                                                {buying ? 'Processing...' : `Buy Package · ₹${totalPrice.toLocaleString('en-IN')}`}
+                                            </button>
+
+                                            <a
+                                                href={`${whatsappBaseLink}?text=${encodeURIComponent(
+                                                    `Hi, I want a custom quote for ${selectedGame.name}. Selected: ${
+                                                        selectedAddons.map((a) => a.name).join(', ') || 'Base package only'
+                                                    }. Total approx ₹${totalPrice.toLocaleString('en-IN')}.`
+                                                )}`}
+                                                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-neutral-200 hover:bg-white/5"
+                                            >
+                                                <MessageCircle className="size-4 text-[#25D366]" />
+                                                Talk to Sales
+                                            </a>
+                                        </div>
+
+                                        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                            <h4 className="font-bold text-white">Why this package?</h4>
+                                            <ul className="mt-3 space-y-2 text-xs text-neutral-400">
+                                                <li className="inline-flex items-start gap-2">
+                                                    <BadgeCheck className="mt-0.5 size-3.5 shrink-0 text-[#ff5c1a]" />
+                                                    Transparent pricing — no hidden charges
+                                                </li>
+                                                <li className="inline-flex items-start gap-2">
+                                                    <BadgeCheck className="mt-0.5 size-3.5 shrink-0 text-[#ff5c1a]" />
+                                                    Add only Development, Play Store, AdMob or Marketing
+                                                </li>
+                                                <li className="inline-flex items-start gap-2">
+                                                    <BadgeCheck className="mt-0.5 size-3.5 shrink-0 text-[#ff5c1a]" />
+                                                    Admin-controlled prices (always up to date)
+                                                </li>
+                                                <li className="inline-flex items-start gap-2">
+                                                    <BadgeCheck className="mt-0.5 size-3.5 shrink-0 text-[#ff5c1a]" />
+                                                    Professional delivery & handover support
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -584,16 +834,15 @@ export default function GameStore({ games = [], categories = [] }) {
                                         </span>
                                     ))}
                                 </div>
-                                <h4 className="mt-5 font-bold text-white">After Successful Payment</h4>
+                                <h4 className="mt-5 font-bold text-white">After Razorpay Payment</h4>
                                 <div className="mt-2 grid gap-2 sm:grid-cols-2">
                                     {[
-                                        'Order ID',
-                                        'Invoice',
+                                        'Auto Payment Verify',
+                                        'Order Marked Paid',
                                         'Customer Dashboard',
-                                        'Download Invoice',
-                                        'Email Confirmation',
-                                        'SMS Notification',
-                                        'Admin Notification',
+                                        'Level Income Credit',
+                                        'Project Processing',
+                                        'Delivery Handover',
                                     ].map((item) => (
                                         <p
                                             key={item}

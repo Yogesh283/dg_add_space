@@ -14,6 +14,7 @@ export default function Purchases({ purchases }) {
                             <th className="px-4 py-3">Amount</th>
                             <th className="px-4 py-3">Status</th>
                             <th className="px-4 py-3">Date</th>
+                            <th className="px-4 py-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -22,8 +23,17 @@ export default function Purchases({ purchases }) {
                                 <td className="px-4 py-3 font-medium text-white">{p.order_id}</td>
                                 <td className="px-4 py-3 text-neutral-300">{p.game_name}</td>
                                 <td className="px-4 py-3 font-semibold text-[#ff5c1a]">₹{Number(p.amount).toLocaleString('en-IN')}</td>
-                                <td className="px-4 py-3 capitalize text-neutral-300">{p.status}</td>
+                                <td className="px-4 py-3 capitalize text-neutral-300">{String(p.status).replaceAll('_', ' ')}</td>
                                 <td className="px-4 py-3 text-neutral-400">{new Date(p.created_at).toLocaleDateString()}</td>
+                                <td className="px-4 py-3">
+                                    {['pending_payment'].includes(p.status) ? (
+                                        <a href={`/member/pay/${p.id}`} className="font-semibold text-[#ff5c1a] hover:underline">
+                                            Pay Now
+                                        </a>
+                                    ) : (
+                                        <span className="text-neutral-500">—</span>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

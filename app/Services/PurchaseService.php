@@ -7,7 +7,10 @@ use App\Models\LevelIncome;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 class PurchaseService
 {
@@ -21,32 +24,142 @@ class PurchaseService
         6 => 2,
     ];
 
-    public function purchase(User $user, string $gameName, float $amount, ?string $category = null, string $method = 'UPI'): GamePurchase
-    {
-        return DB::transaction(function () use ($user, $gameName, $amount, $category, $method) {
+    /**
+     * Create pending order + Razorpay order (auto verify on payment success).
+     */
+    public function createPendingRazorpayOrder(
+        User $user,
+        string $gameName,
+        float $amount,
+        ?string $category = null,
+        ?string $notes = null
+    ): array {
+        if (! config('razorpay.key') || ! config('razorpay.secret')) {
+            throw ValidationException::withMessages([
+                'payment' => 'Razorpay is not configured. Add RAZORPAY_KEY and RAZORPAY_SECRET in .env.',
+            ]);
+        }
+
+        return DB::transaction(function () use ($user, $gameName, $amount, $category, $notes) {
             $purchase = GamePurchase::create([
                 'order_id' => 'ORD-'.strtoupper(Str::random(10)),
                 'user_id' => $user->id,
                 'game_name' => $gameName,
                 'game_category' => $category,
                 'amount' => $amount,
-                'status' => 'paid',
-                'payment_method' => $method,
+                'status' => 'pending_payment',
+                'payment_method' => 'Razorpay',
+                'notes' => $notes,
             ]);
+
+            $razorpayOrder = $this->createRazorpayOrder($purchase);
 
             Payment::create([
                 'user_id' => $user->id,
                 'game_purchase_id' => $purchase->id,
-                'transaction_id' => 'TXN-'.strtoupper(Str::random(12)),
+                'transaction_id' => $razorpayOrder['id'],
                 'amount' => $amount,
-                'method' => $method,
-                'status' => 'success',
-                'meta' => ['game' => $gameName],
+                'method' => 'Razorpay',
+                'status' => 'pending',
+                'meta' => [
+                    'game' => $gameName,
+                    'addons' => $notes,
+                    'gateway' => 'razorpay',
+                    'razorpay_order_id' => $razorpayOrder['id'],
+                ],
             ]);
 
-            $this->distributeLevelIncome($user, $purchase);
+            return [
+                'purchase' => $purchase->fresh(['payment']),
+                'razorpay_order_id' => $razorpayOrder['id'],
+            ];
+        });
+    }
 
-            return $purchase->fresh(['payment']);
+    public function createRazorpayOrder(GamePurchase $purchase): array
+    {
+        $amountPaise = (int) round(((float) $purchase->amount) * 100);
+
+        $response = Http::withBasicAuth((string) config('razorpay.key'), (string) config('razorpay.secret'))
+            ->asForm()
+            ->post('https://api.razorpay.com/v1/orders', [
+                'amount' => $amountPaise,
+                'currency' => config('razorpay.currency', 'INR'),
+                'receipt' => $purchase->order_id,
+                'notes' => [
+                    'purchase_id' => (string) $purchase->id,
+                    'game' => $purchase->game_name,
+                    'user_id' => (string) $purchase->user_id,
+                ],
+            ]);
+
+        if (! $response->successful()) {
+            throw new RuntimeException('Razorpay order failed: '.$response->body());
+        }
+
+        return $response->json();
+    }
+
+    /**
+     * Verify Razorpay signature and mark paid automatically (no admin).
+     */
+    public function verifyRazorpayPayment(
+        GamePurchase $purchase,
+        string $razorpayOrderId,
+        string $razorpayPaymentId,
+        string $razorpaySignature
+    ): GamePurchase {
+        if ($purchase->status === 'paid') {
+            return $purchase;
+        }
+
+        $expected = hash_hmac(
+            'sha256',
+            $razorpayOrderId.'|'.$razorpayPaymentId,
+            (string) config('razorpay.secret')
+        );
+
+        if (! hash_equals($expected, $razorpaySignature)) {
+            throw ValidationException::withMessages([
+                'payment' => 'Invalid Razorpay payment signature.',
+            ]);
+        }
+
+        $storedOrderId = data_get($purchase->payment?->meta, 'razorpay_order_id');
+        if ($storedOrderId && $storedOrderId !== $razorpayOrderId) {
+            throw ValidationException::withMessages([
+                'payment' => 'Razorpay order mismatch.',
+            ]);
+        }
+
+        return DB::transaction(function () use ($purchase, $razorpayOrderId, $razorpayPaymentId, $razorpaySignature) {
+            $purchase->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+                'utr_number' => $razorpayPaymentId,
+                'payment_method' => 'Razorpay',
+            ]);
+
+            if ($purchase->payment) {
+                $purchase->payment->update([
+                    'transaction_id' => $razorpayPaymentId,
+                    'status' => 'success',
+                    'method' => 'Razorpay',
+                    'meta' => array_merge($purchase->payment->meta ?? [], [
+                        'razorpay_order_id' => $razorpayOrderId,
+                        'razorpay_payment_id' => $razorpayPaymentId,
+                        'razorpay_signature' => $razorpaySignature,
+                        'verified_at' => now()->toDateTimeString(),
+                        'auto' => true,
+                    ]),
+                ]);
+            }
+
+            if (! $purchase->levelIncomes()->exists()) {
+                $this->distributeLevelIncome($purchase->user, $purchase);
+            }
+
+            return $purchase->fresh(['payment', 'user']);
         });
     }
 

@@ -17,6 +17,8 @@ class GamePurchase extends Model
         'amount',
         'status',
         'payment_method',
+        'utr_number',
+        'paid_at',
         'notes',
     ];
 
@@ -24,6 +26,7 @@ class GamePurchase extends Model
     {
         return [
             'amount' => 'decimal:2',
+            'paid_at' => 'datetime',
         ];
     }
 

@@ -277,12 +277,13 @@ function SectionHeading({ title, highlight, subtitle }) {
     );
 }
 
-export default function Welcome() {
+export default function Welcome({ featuredGame = null }) {
     const whatsappNumber = '918817788185';
     const whatsappBaseLink = `https://wa.me/${whatsappNumber}`;
     const { flash } = usePage().props;
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const heroImage = featuredGame?.image || heroBannerImage;
     const { data, setData, post, processing, errors, reset } = useForm({
         inquiry_name: '',
         phone: '',
@@ -539,18 +540,40 @@ export default function Welcome() {
                             <div className="relative">
                                 <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-3 shadow-2xl backdrop-blur">
                                     <img
-                                        src={heroBannerImage}
-                                        alt="DG Ad Space gaming showcase"
+                                        src={heroImage}
+                                        alt={featuredGame?.name || 'DG Ad Space gaming showcase'}
                                         className="h-[300px] w-full rounded-2xl object-contain sm:h-[360px]"
                                     />
                                 </div>
                                 <div className="mt-4 rounded-2xl border border-white/10 bg-[#141414] p-4 shadow-xl">
-                                    <p className="text-xs font-bold uppercase tracking-wide text-[#ff5c1a]">
-                                        Business Highlight
-                                    </p>
-                                    <p className="mt-1 text-sm leading-relaxed text-neutral-400">
-                                        Launch your branded Android game with source code, AdMob monetization, and Play Store publishing support.
-                                    </p>
+                                    {featuredGame ? (
+                                        <>
+                                            <p className="text-xs font-bold uppercase tracking-wide text-[#ff5c1a]">
+                                                Featured Game
+                                            </p>
+                                            <h3 className="mt-1 text-lg font-bold text-white">{featuredGame.name}</h3>
+                                            <p className="mt-1 text-sm text-neutral-400">
+                                                {featuredGame.category} • {featuredGame.mode || 'Multiplayer'} • {featuredGame.tech || 'Unity'}
+                                            </p>
+                                            <div className="mt-3 flex items-center justify-between gap-3">
+                                                <p className="text-xl font-extrabold text-[#ff5c1a]">
+                                                    ₹{Number(featuredGame.price).toLocaleString('en-IN')}
+                                                </p>
+                                                <a href="/game-store" className="juego-btn !px-4 !py-2 text-xs">
+                                                    View in Store
+                                                </a>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p className="text-xs font-bold uppercase tracking-wide text-[#ff5c1a]">
+                                                Business Highlight
+                                            </p>
+                                            <p className="mt-1 text-sm leading-relaxed text-neutral-400">
+                                                Launch your branded Android game with source code, AdMob monetization, and Play Store publishing support.
+                                            </p>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
