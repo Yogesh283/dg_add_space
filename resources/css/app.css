@@ -67,9 +67,16 @@
 
 .theme-light .bg-\[\#0a0a0a\],
 .theme-light .bg-\[\#050505\],
+.theme-light .bg-\[\#0d0d0d\],
 .theme-light .bg-\[\#111111\],
 .theme-light .bg-\[\#141414\] {
     background-color: #ffffff !important;
+}
+
+.theme-light .bg-black\/30,
+.theme-light .bg-\[\#0a0a0a\]\/70,
+.theme-light .bg-white\/\[0\.03\] {
+    background-color: #f8fafc !important;
 }
 
 .theme-light .border-white\/10,

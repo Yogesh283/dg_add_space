@@ -155,28 +155,28 @@ export default function GameStore({ games = [], addons = [] }) {
                 <link rel="icon" type="image/png" href="/img/app.icon.png" />
             </Head>
 
-            <div className="min-h-screen bg-[#0a0a0a] text-neutral-200">
-                <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/90 backdrop-blur-lg">
+            <div className="theme-light min-h-screen bg-[#f5f7fb] text-neutral-800">
+                <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/90 backdrop-blur-lg">
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
                         <a href="/" className="inline-flex items-center">
                             <img
                                 src="/img/logo.png"
                                 alt="DG Ad Space"
-                                className="h-[72px] w-auto max-w-[300px] object-contain object-left drop-shadow-[0_0_20px_rgba(77,163,255,0.25)] sm:h-20 sm:max-w-[340px] md:h-24 md:max-w-[400px]"
+                                className="h-[72px] w-auto max-w-[300px] object-contain object-left sm:h-20 sm:max-w-[340px] md:h-24 md:max-w-[400px]"
                             />
                         </a>
 
                         <nav className="hidden items-center gap-7 lg:flex">
-                            <a href="/" className="text-sm font-semibold text-neutral-400 hover:text-[#ff5c1a]">
+                            <a href="/" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">
                                 Home
                             </a>
                             <a href="/game-store" className="text-sm font-semibold text-[#ff5c1a]">
                                 Game Store
                             </a>
-                            <a href="/#pricing" className="text-sm font-semibold text-neutral-400 hover:text-[#ff5c1a]">
+                            <a href="/#pricing" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">
                                 Pricing
                             </a>
-                            <a href="/#contact" className="text-sm font-semibold text-neutral-400 hover:text-[#ff5c1a]">
+                            <a href="/#contact" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">
                                 Contact
                             </a>
                         </nav>
@@ -189,10 +189,10 @@ export default function GameStore({ games = [], addons = [] }) {
                                 </a>
                             ) : (
                                 <>
-                                    <a href="/login" className="text-sm font-semibold text-neutral-200 hover:text-[#ff5c1a]">
+                                    <a href="/login" className="text-sm font-semibold text-neutral-700 hover:text-[#ff5c1a]">
                                         Login
                                     </a>
-                                    <a href="/register" className="text-sm font-semibold text-neutral-200 hover:text-[#ff5c1a]">
+                                    <a href="/register" className="text-sm font-semibold text-neutral-700 hover:text-[#ff5c1a]">
                                         Register
                                     </a>
                                 </>
@@ -208,7 +208,7 @@ export default function GameStore({ games = [], addons = [] }) {
 
                         <button
                             type="button"
-                            className="rounded-lg border border-white/10 p-2 text-neutral-200 lg:hidden"
+                            className="rounded-lg border border-neutral-200 p-2 text-neutral-700 lg:hidden"
                             onClick={() => setMenuOpen((v) => !v)}
                             aria-label="Toggle menu"
                         >
@@ -217,29 +217,29 @@ export default function GameStore({ games = [], addons = [] }) {
                     </div>
 
                     {menuOpen && (
-                        <div className="border-t border-white/10 bg-[#0a0a0a] px-4 py-4 lg:hidden">
+                        <div className="border-t border-neutral-200 bg-white px-4 py-4 lg:hidden">
                             <div className="flex flex-col gap-3">
-                                <a href="/" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5">
+                                <a href="/" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100">
                                     Home
                                 </a>
-                                <a href="/game-store" className="rounded-lg px-3 py-2 text-sm font-semibold text-[#ff5c1a] hover:bg-white/5">
+                                <a href="/game-store" className="rounded-lg px-3 py-2 text-sm font-semibold text-[#ff5c1a] hover:bg-neutral-100">
                                     Game Store
                                 </a>
                                 {auth?.user ? (
-                                    <a href="/member" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5">
+                                    <a href="/member" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100">
                                         Referral & Earn
                                     </a>
                                 ) : (
                                     <>
-                                        <a href="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5">
+                                        <a href="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100">
                                             Login
                                         </a>
-                                        <a href="/register" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5">
+                                        <a href="/register" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100">
                                             Register
                                         </a>
                                     </>
                                 )}
-                                <a href="/#contact" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5">
+                                <a href="/#contact" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100">
                                     Contact
                                 </a>
                                 <a href={whatsappBaseLink} className="pro-btn bg-emerald-600 text-white">
@@ -253,23 +253,23 @@ export default function GameStore({ games = [], addons = [] }) {
 
                 <main>
                     {/* Hero */}
-                    <section className="relative overflow-hidden bg-[#0a0a0a]">
+                    <section className="relative overflow-hidden bg-[#f5f7fb]">
                         <div
-                            className="absolute inset-0 opacity-70"
+                            className="absolute inset-0 opacity-90"
                             style={{
                                 backgroundImage:
-                                    'radial-gradient(circle at 15% 20%, rgba(255,92,26,0.18), transparent 40%), radial-gradient(circle at 85% 0%, rgba(255,92,26,0.12), transparent 35%)',
+                                    'radial-gradient(circle at 15% 20%, rgba(255,92,26,0.12), transparent 40%), radial-gradient(circle at 85% 0%, rgba(26,163,255,0.10), transparent 35%)',
                             }}
                         />
                         <div className="relative mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-16">
-                            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#ff9a66]">
+                            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#ff5c1a]">
                                 Marketplace
                             </p>
-                            <h1 className="max-w-3xl text-3xl font-extrabold text-white sm:text-4xl md:text-5xl">
+                            <h1 className="max-w-3xl text-3xl font-extrabold text-neutral-900 sm:text-4xl md:text-5xl">
                                 Ready-Made{' '}
                                 <span className="text-[#ff5c1a]">Android Games</span>
                             </h1>
-                            <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-400 sm:text-lg">
+                            <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-600 sm:text-lg">
                                 Choose your favorite game, customize it with your brand, and launch your own gaming business on Google Play Store.
                             </p>
                             <div className="mt-6 flex flex-wrap gap-3">
@@ -388,22 +388,22 @@ export default function GameStore({ games = [], addons = [] }) {
 
                         {/* Advanced Product Configurator */}
                         {selectedGame && (
-                        <section id="details" className="mt-10 overflow-hidden rounded-3xl border border-white/10 bg-[#111111]">
-                            <div className="border-b border-white/10 bg-gradient-to-r from-[#ff5c1a]/15 via-transparent to-[#1aa3ff]/10 px-5 py-6 md:px-8">
-                                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff9a66]">
+                        <section id="details" className="mt-10 overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+                            <div className="border-b border-neutral-200 bg-gradient-to-r from-[#ff5c1a]/10 via-transparent to-[#1aa3ff]/10 px-5 py-6 md:px-8">
+                                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff5c1a]">
                                     Enterprise Product Package
                                 </p>
                                 <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                                     <div>
-                                        <h2 className="text-2xl font-extrabold text-white md:text-3xl">
+                                        <h2 className="text-2xl font-extrabold text-neutral-900 md:text-3xl">
                                             {selectedGame.name}
                                         </h2>
-                                        <p className="mt-2 max-w-2xl text-sm text-neutral-400">
+                                        <p className="mt-2 max-w-2xl text-sm text-neutral-600">
                                             {selectedGame.description ||
                                                 'Professional ready-made Android game package. See what is included, add optional services, and get a clear final quote — like buying from a VIP IT company.'}
                                         </p>
                                     </div>
-                                    <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-right">
+                                    <div className="rounded-2xl border border-neutral-200 bg-[#f8fafc] px-4 py-3 text-right">
                                         <p className="text-[11px] uppercase tracking-wide text-neutral-500">Starting from</p>
                                         <p className="text-2xl font-extrabold text-[#ff5c1a]">
                                             ₹{Number(selectedGame.price).toLocaleString('en-IN')}
@@ -564,13 +564,13 @@ export default function GameStore({ games = [], addons = [] }) {
                                     </div>
                                 </div>
 
-                                <div className="bg-[#0d0d0d] p-5 md:p-8">
+                                <div className="bg-[#f8fafc] p-5 md:p-8">
                                     <div className="sticky top-24 space-y-4">
-                                        <div className="rounded-2xl border border-[#ff5c1a]/35 bg-[#ff5c1a]/5 p-5">
-                                            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ff9a66]">
+                                        <div className="rounded-2xl border border-[#ff5c1a]/30 bg-[#ff5c1a]/5 p-5">
+                                            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ff5c1a]">
                                                 Order Summary
                                             </p>
-                                            <h3 className="mt-2 text-xl font-bold text-white">Your Package</h3>
+                                            <h3 className="mt-2 text-xl font-bold text-neutral-900">Your Package</h3>
 
                                             <ul className="mt-4 space-y-2.5 text-sm text-neutral-300">
                                                 <li className="flex justify-between gap-3">
@@ -824,9 +824,9 @@ export default function GameStore({ games = [], addons = [] }) {
                             </div>
                         </section>
 
-                        <section className="mt-10 overflow-hidden rounded-3xl border border-white/10 bg-[#141414] px-6 py-10 text-center text-white md:px-10">
+                        <section className="mt-10 overflow-hidden rounded-3xl border border-neutral-200 bg-white px-6 py-10 text-center text-neutral-900 shadow-sm md:px-10">
                             <h3 className="text-2xl font-bold sm:text-3xl">Ready to Launch Your Own Game?</h3>
-                            <p className="mx-auto mt-3 max-w-2xl text-neutral-400">
+                            <p className="mx-auto mt-3 max-w-2xl text-neutral-600">
                                 Choose your favorite game today and start your mobile gaming business with DG Ad Space.
                             </p>
                             <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -854,19 +854,19 @@ export default function GameStore({ games = [], addons = [] }) {
                     </div>
                 </main>
 
-                <footer className="border-t border-white/10 bg-[#050505] text-white">
+                <footer className="border-t border-neutral-200 bg-white text-neutral-800">
                     <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 md:flex-row md:items-center md:justify-between md:px-8">
                         <div>
-                            <img src="/img/logo.png" alt="DG Ad Space" className="h-16 w-auto max-w-[280px] object-contain object-left drop-shadow sm:h-20 sm:max-w-[340px]" />
-                            <p className="mt-3 text-sm text-neutral-400">Ready-Made Android Games Marketplace</p>
+                            <img src="/img/logo.png" alt="DG Ad Space" className="h-16 w-auto max-w-[280px] object-contain object-left sm:h-20 sm:max-w-[340px]" />
+                            <p className="mt-3 text-sm text-neutral-600">Ready-Made Android Games Marketplace</p>
                         </div>
-                        <div className="flex flex-wrap gap-4 text-sm text-neutral-400">
+                        <div className="flex flex-wrap gap-4 text-sm text-neutral-600">
                             <a href="/" className="hover:text-[#ff5c1a]">Home</a>
                             <a href="/game-store" className="hover:text-[#ff5c1a]">Game Store</a>
                             <a href="/#contact" className="hover:text-[#ff5c1a]">Contact</a>
                         </div>
                     </div>
-                    <div className="border-t border-white/10 py-4 text-center text-xs text-neutral-500">
+                    <div className="border-t border-neutral-200 py-4 text-center text-xs text-neutral-500">
                         © {new Date().getFullYear()} DG Ad Space. All rights reserved.
                     </div>
                 </footer>
