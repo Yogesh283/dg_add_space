@@ -268,11 +268,11 @@ function SectionEyebrow({ children }) {
 function SectionHeading({ title, highlight, subtitle }) {
     return (
         <div className="mx-auto mb-10 max-w-2xl text-center">
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="text-3xl font-bold text-neutral-900 sm:text-4xl">
                 {title}{' '}
                 <span className="text-[#ff5c1a]">{highlight}</span>
             </h2>
-            {subtitle && <p className="mt-3 text-base text-neutral-400">{subtitle}</p>}
+            {subtitle && <p className="mt-3 text-base text-neutral-600">{subtitle}</p>}
         </div>
     );
 }
@@ -325,12 +325,12 @@ export default function Welcome({ featuredGame = null }) {
                 />
             </Head>
 
-            <div className="min-h-screen bg-[#0a0a0a] text-neutral-200">
+            <div className="theme-light min-h-screen bg-[#f5f7fb] text-neutral-800">
                 {showSuccessPopup && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4">
-                        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#141414] p-6 text-center shadow-2xl">
-                            <p className="text-lg font-bold text-emerald-500">Success!</p>
-                            <p className="mt-2 text-sm text-neutral-400">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4">
+                        <div className="w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-2xl">
+                            <p className="text-lg font-bold text-emerald-600">Success!</p>
+                            <p className="mt-2 text-sm text-neutral-600">
                                 Your query was sent to support@dgadspace.com. Our team will contact you soon.
                             </p>
                             <button
@@ -345,13 +345,13 @@ export default function Welcome({ featuredGame = null }) {
                 )}
 
                 {/* Header */}
-                <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/90 backdrop-blur-lg">
+                <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/90 backdrop-blur-lg">
                     <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-8">
                         <a href="#home" className="inline-flex items-center">
                             <img
                                 src="/img/logo.png"
                                 alt="DG Ad Space"
-                                className="h-[72px] w-auto max-w-[280px] object-contain object-left drop-shadow-[0_0_18px_rgba(255,92,26,0.25)] sm:h-20 sm:max-w-[320px] md:h-24 md:max-w-[380px]"
+                                className="h-[72px] w-auto max-w-[280px] object-contain object-left sm:h-20 sm:max-w-[320px] md:h-24 md:max-w-[380px]"
                             />
                         </a>
 
@@ -360,7 +360,7 @@ export default function Welcome({ featuredGame = null }) {
                                 <a
                                     key={link.href}
                                     href={link.href}
-                                    className="text-sm font-semibold text-neutral-400 transition hover:text-[#ff5c1a]"
+                                    className="text-sm font-semibold text-neutral-600 transition hover:text-[#ff5c1a]"
                                 >
                                     {link.label}
                                 </a>
@@ -370,11 +370,11 @@ export default function Welcome({ featuredGame = null }) {
                         <div className="hidden items-center gap-3 md:flex">
                             <a
                                 href="/game-store"
-                                className="text-sm font-semibold text-neutral-200 hover:text-[#ff5c1a]"
+                                className="text-sm font-semibold text-neutral-700 hover:text-[#ff5c1a]"
                             >
                                 Game Store
                             </a>
-                            <a href="/login" className="text-sm font-semibold text-neutral-200 hover:text-[#ff5c1a]">
+                            <a href="/login" className="text-sm font-semibold text-neutral-700 hover:text-[#ff5c1a]">
                                 Login
                             </a>
                             <a href="/register" className="juego-btn px-4 py-2">
@@ -391,7 +391,7 @@ export default function Welcome({ featuredGame = null }) {
 
                         <button
                             type="button"
-                            className="rounded-lg border border-white/10 p-2 text-neutral-200 lg:hidden"
+                            className="rounded-lg border border-neutral-200 p-2 text-neutral-700 lg:hidden"
                             onClick={() => setMenuOpen((v) => !v)}
                             aria-label="Toggle menu"
                         >
@@ -400,28 +400,28 @@ export default function Welcome({ featuredGame = null }) {
                     </div>
 
                     {menuOpen && (
-                        <div className="border-t border-white/10 bg-[#0a0a0a] px-4 py-4 lg:hidden">
+                        <div className="border-t border-neutral-200 bg-white px-4 py-4 lg:hidden">
                             <div className="flex flex-col gap-3">
                                 {navLinks.map((link) => (
                                     <a
                                         key={link.href}
                                         href={link.href}
                                         onClick={() => setMenuOpen(false)}
-                                        className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5"
+                                        className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100"
                                     >
                                         {link.label}
                                     </a>
                                 ))}
                                 <a
                                     href="/game-store"
-                                    className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5"
+                                    className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100"
                                 >
                                     Game Store
                                 </a>
-                                <a href="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5">
+                                <a href="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100">
                                     Login
                                 </a>
-                                <a href="/register" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-200 hover:bg-white/5">
+                                <a href="/register" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700 hover:bg-neutral-100">
                                     Register
                                 </a>
                                 <a
@@ -438,12 +438,12 @@ export default function Welcome({ featuredGame = null }) {
 
                 <main>
                     {/* Only highlight strip — nav ke bilkul neeche (compact height) */}
-                    <section id="highlights" className="border-b border-white/10 bg-[#111111] py-3 md:py-3.5">
+                    <section id="highlights" className="border-b border-neutral-200 bg-white py-3 md:py-3.5">
                         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-2 px-4 sm:grid-cols-2 md:px-8 lg:grid-cols-4">
                             {featureCards.map((card) => (
                                 <article
                                     key={card.title}
-                                    className="group flex items-center gap-2.5 overflow-hidden rounded-xl border bg-[#141414] px-3 py-2.5 transition hover:-translate-y-0.5"
+                                    className="group flex items-center gap-2.5 overflow-hidden rounded-xl border bg-white px-3 py-2.5 transition hover:-translate-y-0.5"
                                     style={{
                                         borderColor: card.border,
                                         boxShadow: `0 0 12px ${card.soft}`,
@@ -465,7 +465,7 @@ export default function Welcome({ featuredGame = null }) {
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <div className="flex items-center gap-1.5">
-                                            <h3 className="truncate text-sm font-bold text-white">{card.title}</h3>
+                                            <h3 className="truncate text-sm font-bold text-neutral-900">{card.title}</h3>
                                             <span
                                                 className="text-xs font-bold transition group-hover:translate-x-0.5"
                                                 style={{ color: card.accent }}
@@ -485,24 +485,24 @@ export default function Welcome({ featuredGame = null }) {
 
                     {/* Hero — main content same */}
                     <section id="home" className="relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[#0a0a0a]" />
+                        <div className="absolute inset-0 bg-[#f5f7fb]" />
                         <div
-                            className="absolute inset-0 opacity-70"
+                            className="absolute inset-0 opacity-90"
                             style={{
                                 backgroundImage:
-                                    'radial-gradient(circle at 15% 20%, rgba(255,92,26,0.18), transparent 40%), radial-gradient(circle at 85% 0%, rgba(255,92,26,0.12), transparent 35%), radial-gradient(circle at 50% 100%, rgba(255,92,26,0.08), transparent 45%)',
+                                    'radial-gradient(circle at 15% 20%, rgba(255,92,26,0.12), transparent 40%), radial-gradient(circle at 85% 0%, rgba(26,163,255,0.10), transparent 35%), radial-gradient(circle at 50% 100%, rgba(255,92,26,0.08), transparent 45%)',
                             }}
                         />
 
                         <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-14 md:px-8 md:py-20 lg:grid-cols-2">
                             <div>
-                                <p className="mb-4 inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#ff9a66]">
+                                <p className="mb-4 inline-flex rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#ff5c1a]">
                                     Gaming Business Solutions
                                 </p>
-                                <h1 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-[3.4rem]">
+                                <h1 className="text-4xl font-extrabold leading-tight text-neutral-900 sm:text-5xl lg:text-[3.4rem]">
                                     Your Game. Our Work. Your Income.
                                 </h1>
-                                <p className="mt-5 max-w-xl text-base leading-relaxed text-neutral-400 sm:text-lg">
+                                <p className="mt-5 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg">
                                     We develop your game, publish it on the Google Play Store, integrate Google AdMob, and help grow your audience through digital marketing.
                                 </p>
                                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -581,7 +581,7 @@ export default function Welcome({ featuredGame = null }) {
                     </section>
 
                     {/* Trust strip */}
-                    <section className="border-b border-white/10 bg-[#0a0a0a]">
+                    <section className="border-b border-neutral-200 bg-white">
                         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-6 px-4 py-5 text-sm font-semibold text-neutral-400 md:justify-between md:px-8">
                             <span className="inline-flex items-center gap-2"><ShieldCheck className="size-4 text-[#ff5c1a]" /> Trusted delivery</span>
                             <span className="inline-flex items-center gap-2"><Store className="size-4 text-[#ff5c1a]" /> Play Store ready</span>
@@ -625,13 +625,13 @@ export default function Welcome({ featuredGame = null }) {
                                                 {plan.tag}
                                             </span>
                                         </div>
-                                        <div className="mt-4 rounded-xl border border-white/10 bg-[#0a0a0a] p-4">
+                                        <div className="mt-4 rounded-xl border border-neutral-200 bg-[#f8fafc] p-4">
                                             <div className="flex items-end justify-between gap-3">
                                                 <div>
                                                     <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-500">
                                                         Market Price
                                                     </p>
-                                                    <p className="mt-1 text-lg font-semibold text-neutral-300">
+                                                    <p className="mt-1 text-lg font-semibold text-neutral-700">
                                                         {plan.marketPrice}
                                                     </p>
                                                 </div>
@@ -639,7 +639,7 @@ export default function Welcome({ featuredGame = null }) {
                                                     <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#ff5c1a]">
                                                         Our Price
                                                     </p>
-                                                    <p className="mt-1 text-3xl font-extrabold text-white">
+                                                    <p className="mt-1 text-3xl font-extrabold text-neutral-900">
                                                         {plan.price}
                                                     </p>
                                                 </div>
@@ -1042,20 +1042,20 @@ export default function Welcome({ featuredGame = null }) {
                     </section>
                 </main>
 
-                <footer className="border-t border-white/10 bg-[#050505] text-white">
+                <footer className="border-t border-neutral-200 bg-white text-neutral-800">
                     <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 md:flex-row md:items-center md:justify-between md:px-8">
                         <div>
-                            <img src="/img/logo.png" alt="DG Ad Space" className="h-16 w-auto max-w-[260px] object-contain object-left drop-shadow sm:h-20 sm:max-w-[320px]" />
-                            <p className="mt-3 text-sm text-neutral-400">Your Game. Our Work. Your Income.</p>
+                            <img src="/img/logo.png" alt="DG Ad Space" className="h-16 w-auto max-w-[260px] object-contain object-left sm:h-20 sm:max-w-[320px]" />
+                            <p className="mt-3 text-sm text-neutral-600">Your Game. Our Work. Your Income.</p>
                         </div>
-                        <div className="flex flex-wrap gap-4 text-sm text-neutral-400">
+                        <div className="flex flex-wrap gap-4 text-sm text-neutral-600">
                             <a href="#services" className="hover:text-[#ff5c1a]">Services</a>
                             <a href="#pricing" className="hover:text-[#ff5c1a]">Pricing</a>
                             <a href="/game-store" className="hover:text-[#ff5c1a]">Game Store</a>
                             <a href="#contact" className="hover:text-[#ff5c1a]">Contact</a>
                         </div>
                     </div>
-                    <div className="border-t border-white/10 py-4 text-center text-xs text-neutral-500">
+                    <div className="border-t border-neutral-200 py-4 text-center text-xs text-neutral-500">
                         © {new Date().getFullYear()} DG Ad Space. All rights reserved.
                     </div>
                 </footer>

@@ -42,3 +42,74 @@
         @apply inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10;
     }
 }
+
+/* Landing page white theme */
+.theme-light {
+    background: #f5f7fb;
+    color: #1f2937;
+}
+
+.theme-light .pro-card {
+    border-color: #e5e7eb;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.theme-light .juego-btn-outline {
+    border-color: #d1d5db;
+    background: #ffffff;
+    color: #111827;
+}
+
+.theme-light .juego-btn-outline:hover {
+    background: #f3f4f6;
+}
+
+.theme-light .bg-\[\#0a0a0a\],
+.theme-light .bg-\[\#050505\],
+.theme-light .bg-\[\#111111\],
+.theme-light .bg-\[\#141414\] {
+    background-color: #ffffff !important;
+}
+
+.theme-light .border-white\/10,
+.theme-light .border-white\/15,
+.theme-light .border-white\/20 {
+    border-color: #e5e7eb !important;
+}
+
+.theme-light .bg-white\/5,
+.theme-light .bg-white\/10,
+.theme-light .hover\:bg-white\/5:hover,
+.theme-light .hover\:bg-white\/10:hover {
+    background-color: #f3f4f6 !important;
+}
+
+.theme-light .text-white {
+    color: #111827 !important;
+}
+
+.theme-light .text-neutral-200,
+.theme-light .text-neutral-300 {
+    color: #374151 !important;
+}
+
+.theme-light .text-neutral-400,
+.theme-light .text-neutral-500 {
+    color: #6b7280 !important;
+}
+
+.theme-light .juego-btn,
+.theme-light .bg-\[\#ff5c1a\],
+.theme-light .bg-\[\#1aa3ff\],
+.theme-light .bg-emerald-600,
+.theme-light .bg-emerald-700,
+.theme-light .pro-btn.bg-emerald-600 {
+    color: #ffffff !important;
+}
+
+.theme-light .hover\:bg-\[\#ff7338\]:hover,
+.theme-light .hover\:bg-emerald-700:hover,
+.theme-light .hover\:bg-\[\#0d8ee6\]:hover {
+    color: #ffffff !important;
+}
