@@ -5,8 +5,6 @@ import {
     CheckCircle2,
     CircleDollarSign,
     Download,
-    Filter,
-    ListFilter,
     Menu,
     MessageCircle,
     Package,
@@ -16,22 +14,6 @@ import {
     Users,
     X,
 } from 'lucide-react';
-
-const defaultCategories = [
-    'Racing Games',
-    'Puzzle Games',
-    'Arcade Games',
-    'Quiz Games',
-    'Multiplayer Games',
-    'Sports Games',
-    'Casual Games',
-    'Card Games',
-    'Board Games',
-    'Action Games',
-    'Adventure Games',
-    'Simulation Games',
-    'Hyper Casual Games',
-];
 
 const features = [
     'Source Code Included',
@@ -101,13 +83,10 @@ const faqs = [
     ['Do you provide updates?', 'Yes. Support and update assistance is available as per the selected support package.'],
 ];
 
-export default function GameStore({ games = [], categories = [], addons = [] }) {
+export default function GameStore({ games = [], addons = [] }) {
     const whatsappNumber = '918817788185';
     const whatsappBaseLink = `https://wa.me/${whatsappNumber}`;
     const { auth, flash, errors } = usePage().props;
-    const categoryList = categories.length ? categories : defaultCategories;
-    const [activeCategory, setActiveCategory] = useState('All');
-    const [sortBy, setSortBy] = useState('Popularity');
     const [selectedGame, setSelectedGame] = useState(games[0] || null);
     const [selectedAddonIds, setSelectedAddonIds] = useState([]);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -169,20 +148,6 @@ export default function GameStore({ games = [], categories = [], addons = [] }) 
             }
         );
     };
-
-    const filteredGames = useMemo(() => {
-        let items = games.filter((g) => activeCategory === 'All' || g.category === activeCategory);
-
-        if (sortBy === 'Price') {
-            items = [...items].sort((a, b) => a.price - b.price);
-        } else if (sortBy === 'Latest' || sortBy === 'Newest') {
-            items = [...items].reverse();
-        } else if (sortBy === 'Best Selling') {
-            items = [...items].sort((a, b) => parseInt(b.downloads || '0', 10) - parseInt(a.downloads || '0', 10));
-        }
-
-        return items;
-    }, [games, activeCategory, sortBy]);
 
     return (
         <>
@@ -343,138 +308,80 @@ export default function GameStore({ games = [], categories = [], addons = [] }) 
                     )}
 
                     <div id="games" className="mx-auto max-w-7xl px-4 py-10 md:px-8">
-                        <section className="grid gap-6 lg:grid-cols-[260px_1fr]">
-                            <aside className="pro-card h-fit p-4">
-                                <h3 className="inline-flex items-center gap-2 font-bold text-white">
-                                    <Filter className="size-4 text-[#ff5c1a]" />
-                                    Filter
-                                </h3>
-                                <div className="mt-4">
-                                    <label className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
-                                        Category
-                                    </label>
-                                    <div className="mt-2 grid max-h-[420px] gap-1.5 overflow-auto pr-1">
-                                        <button
-                                            type="button"
-                                            onClick={() => setActiveCategory('All')}
-                                            className={`rounded-lg px-3 py-2 text-left text-sm font-medium ${
-                                                activeCategory === 'All'
-                                                    ? 'bg-[#ff5c1a]/10 text-[#ff5c1a]'
-                                                    : 'text-neutral-400 hover:bg-white/5'
-                                            }`}
-                                        >
-                                            All Games
-                                        </button>
-                                        {categoryList.map((c) => (
+                        <section>
+                            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                                {games.map((game) => (
+                                    <article key={game.name} className="pro-card p-4 transition hover:-translate-y-0.5 hover:shadow-lg">
+                                        <img
+                                            src={game.image}
+                                            alt={game.name}
+                                            className="h-40 w-full rounded-xl object-cover"
+                                        />
+                                        <h3 className="mt-3 text-lg font-bold text-white">{game.name}</h3>
+                                        <p className="text-xs text-neutral-500">
+                                            {game.category} • {game.mode}
+                                        </p>
+                                        <p className="mt-1 text-xs text-neutral-500">
+                                            Android v8+ • {game.tech}
+                                        </p>
+                                        <div className="mt-2 flex flex-wrap gap-1.5 text-[11px]">
+                                            <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 font-semibold text-emerald-400">
+                                                AdMob Ready
+                                            </span>
+                                            <span className="rounded-full bg-[#ff5c1a]/10 px-2.5 py-1 font-semibold text-[#ff5c1a]">
+                                                Play Store Ready
+                                            </span>
+                                        </div>
+                                        <p className="mt-3 text-xl font-extrabold text-[#ff5c1a]">
+                                            ₹{game.price.toLocaleString('en-IN')}
+                                        </p>
+                                        <p className="text-xs text-neutral-500">
+                                            Delivery: {game.delivery} • Demo: {game.downloads}
+                                        </p>
+                                        <div className="mt-1 flex text-amber-400">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <Star key={i} className="size-3.5 fill-amber-400" />
+                                            ))}
+                                        </div>
+                                        <div className="mt-3 grid grid-cols-2 gap-2">
                                             <button
                                                 type="button"
-                                                key={c}
-                                                onClick={() => setActiveCategory(c)}
-                                                className={`rounded-lg px-3 py-2 text-left text-sm font-medium ${
-                                                    activeCategory === c
-                                                        ? 'bg-[#ff5c1a]/10 text-[#ff5c1a]'
-                                                        : 'text-neutral-400 hover:bg-white/5'
-                                                }`}
+                                                onClick={() => openGameDetails(game)}
+                                                className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-white/10"
                                             >
-                                                {c}
+                                                View Details
                                             </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </aside>
-
-                            <div>
-                                <div className="mb-4 flex justify-end">
-                                    <div className="relative">
-                                        <ListFilter className="pointer-events-none absolute left-3 top-3.5 size-4 text-neutral-500" />
-                                        <select
-                                            value={sortBy}
-                                            onChange={(e) => setSortBy(e.target.value)}
-                                            className="w-full rounded-xl border border-white/10 bg-[#141414] py-3 pl-9 pr-8 text-sm text-white outline-none focus:border-[#ff5c1a] sm:w-auto"
-                                        >
-                                            <option>Popularity</option>
-                                            <option>Price</option>
-                                            <option>Latest</option>
-                                            <option>Best Selling</option>
-                                            <option>Newest</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                                    {filteredGames.map((game) => (
-                                        <article key={game.name} className="pro-card p-4 transition hover:-translate-y-0.5 hover:shadow-lg">
-                                            <img
-                                                src={game.image}
-                                                alt={game.name}
-                                                className="h-40 w-full rounded-xl object-cover"
-                                            />
-                                            <h3 className="mt-3 text-lg font-bold text-white">{game.name}</h3>
-                                            <p className="text-xs text-neutral-500">
-                                                {game.category} • {game.mode}
-                                            </p>
-                                            <p className="mt-1 text-xs text-neutral-500">
-                                                Android v8+ • {game.tech}
-                                            </p>
-                                            <div className="mt-2 flex flex-wrap gap-1.5 text-[11px]">
-                                                <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 font-semibold text-emerald-400">
-                                                    AdMob Ready
-                                                </span>
-                                                <span className="rounded-full bg-[#ff5c1a]/10 px-2.5 py-1 font-semibold text-[#ff5c1a]">
-                                                    Play Store Ready
-                                                </span>
-                                            </div>
-                                            <p className="mt-3 text-xl font-extrabold text-[#ff5c1a]">
-                                                ₹{game.price.toLocaleString('en-IN')}
-                                            </p>
-                                            <p className="text-xs text-neutral-500">
-                                                Delivery: {game.delivery} • Demo: {game.downloads}
-                                            </p>
-                                            <div className="mt-1 flex text-amber-400">
-                                                {Array.from({ length: 5 }).map((_, i) => (
-                                                    <Star key={i} className="size-3.5 fill-amber-400" />
-                                                ))}
-                                            </div>
-                                            <div className="mt-3 grid grid-cols-2 gap-2">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => openGameDetails(game)}
-                                                    className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-neutral-200 hover:bg-white/10"
-                                                >
-                                                    View Details
-                                                </button>
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    className="inline-flex items-center justify-center rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-neutral-300 hover:bg-white/5"
-                                                >
-                                                    Watch Demo
-                                                </a>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => openGameDetails(game)}
-                                                    className="rounded-lg bg-[#ff5c1a] px-3 py-2 text-center text-xs font-semibold text-white hover:bg-[#ff7338]"
-                                                >
-                                                    Buy Now
-                                                </button>
-                                                <a
-                                                    href={`${whatsappBaseLink}?text=${encodeURIComponent(`Hi, I want customization for ${game.name}.`)}`}
-                                                    className="rounded-lg border border-white/10 px-3 py-2 text-center text-xs font-semibold text-neutral-300 hover:bg-white/5"
-                                                >
-                                                    Customize
-                                                </a>
-                                            </div>
-                                        </article>
-                                    ))}
-                                </div>
-
-                                {filteredGames.length === 0 && (
-                                    <div className="pro-card p-8 text-center text-neutral-500">
-                                        No games found for this category.
-                                    </div>
-                                )}
+                                            <a
+                                                href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="inline-flex items-center justify-center rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-neutral-300 hover:bg-white/5"
+                                            >
+                                                Watch Demo
+                                            </a>
+                                            <button
+                                                type="button"
+                                                onClick={() => openGameDetails(game)}
+                                                className="rounded-lg bg-[#ff5c1a] px-3 py-2 text-center text-xs font-semibold text-white hover:bg-[#ff7338]"
+                                            >
+                                                Buy Now
+                                            </button>
+                                            <a
+                                                href={`${whatsappBaseLink}?text=${encodeURIComponent(`Hi, I want customization for ${game.name}.`)}`}
+                                                className="rounded-lg border border-white/10 px-3 py-2 text-center text-xs font-semibold text-neutral-300 hover:bg-white/5"
+                                            >
+                                                Customize
+                                            </a>
+                                        </div>
+                                    </article>
+                                ))}
                             </div>
+
+                            {games.length === 0 && (
+                                <div className="pro-card p-8 text-center text-neutral-500">
+                                    No games available right now.
+                                </div>
+                            )}
                         </section>
 
                         {/* Advanced Product Configurator */}
