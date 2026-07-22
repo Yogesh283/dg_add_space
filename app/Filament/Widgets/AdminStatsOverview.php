@@ -11,127 +11,107 @@ use App\Models\LevelIncome;
 use App\Models\Payment;
 use App\Models\SupportTicket;
 use App\Models\User;
-use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Number;
+use Throwable;
 
 class AdminStatsOverview extends StatsOverviewWidget
 {
+    protected static bool $isLazy = false;
+
     protected static ?int $sort = 1;
 
     protected int | string | array $columnSpan = 'full';
 
     protected function getStats(): array
     {
-        $productBuyers = User::query()
-            ->whereHas('purchases', fn ($q) => $q->where('status', 'paid'))
-            ->count();
+        try {
+            $productBuyers = User::query()
+                ->whereHas('purchases', fn ($q) => $q->where('status', 'paid'))
+                ->count();
 
-        $paidOrders = GamePurchase::query()->where('status', 'paid')->count();
-        $pendingOrders = GamePurchase::query()->where('status', 'pending_payment')->count();
+            $paidOrders = GamePurchase::query()->where('status', 'paid')->count();
+            $pendingOrders = GamePurchase::query()->where('status', 'pending_payment')->count();
 
-        $depositTotal = (float) GamePurchase::query()->where('status', 'paid')->sum('amount');
-        $depositToday = (float) GamePurchase::query()
-            ->where('status', 'paid')
-            ->where(function ($q) {
-                $q->whereDate('paid_at', today())
-                    ->orWhere(function ($q2) {
-                        $q2->whereNull('paid_at')->whereDate('updated_at', today());
-                    });
-            })
-            ->sum('amount');
+            $depositTotal = (float) GamePurchase::query()->where('status', 'paid')->sum('amount');
+            $depositToday = (float) GamePurchase::query()
+                ->where('status', 'paid')
+                ->where(function ($q) {
+                    $q->whereDate('paid_at', today())
+                        ->orWhere(function ($q2) {
+                            $q2->whereNull('paid_at')->whereDate('updated_at', today());
+                        });
+                })
+                ->sum('amount');
 
-        $incomeTotal = (float) LevelIncome::query()->sum('income_amount');
-        $incomeToday = (float) LevelIncome::query()->whereDate('created_at', today())->sum('income_amount');
+            $incomeTotal = (float) LevelIncome::query()->sum('income_amount');
+            $incomeToday = (float) LevelIncome::query()->whereDate('created_at', today())->sum('income_amount');
 
-        $members = User::query()->where('is_admin', false)->count();
-        $membersToday = User::query()->whereDate('created_at', today())->count();
-        $walletTotal = (float) User::query()->sum('wallet_balance');
-        $openTickets = SupportTicket::query()->whereIn('status', ['open', 'answered'])->count();
-        $paymentsSuccess = (float) Payment::query()->where('status', 'success')->sum('amount');
+            $members = User::query()->where('is_admin', false)->count();
+            $membersToday = User::query()->whereDate('created_at', today())->count();
+            $walletTotal = (float) User::query()->sum('wallet_balance');
+            $openTickets = SupportTicket::query()->whereIn('status', ['open', 'answered'])->count();
+            $paymentsSuccess = (float) Payment::query()->where('status', 'success')->sum('amount');
+        } catch (Throwable) {
+            return [
+                Stat::make('Dashboard Stats', 'Unavailable')
+                    ->description('Check database / migrations on server')
+                    ->color('danger'),
+            ];
+        }
 
-        $inr = fn (float $n): string => '₹'.Number::format($n, maxPrecision: 2, locale: 'en_IN');
+        $inr = fn (float $n): string => '₹'.number_format($n, 2);
+
+        $usersUrl = UserResource::getUrl('index');
+        $ordersUrl = GamePurchaseResource::getUrl('index');
+        $incomesUrl = LevelIncomeResource::getUrl('index');
+        $ticketsUrl = SupportTicketResource::getUrl('index');
 
         return [
             Stat::make('Product Buyers', (string) $productBuyers)
-                ->description('Users who bought — click for list')
-                ->descriptionIcon(Heroicon::OutlinedUsers)
+                ->description('Users who bought — click list')
                 ->color('success')
-                ->url(UserResource::getUrl('index', [
-                    'tableFilters' => [
-                        'bought_product' => ['isActive' => true],
-                    ],
-                ]))
-                ->icon(Heroicon::OutlinedShoppingBag),
+                ->url($usersUrl.'?tableFilters[bought_product][isActive]=true'),
 
             Stat::make('Paid Orders', (string) $paidOrders)
                 ->description($pendingOrders.' pending payment')
-                ->descriptionIcon(Heroicon::OutlinedClock)
                 ->color('primary')
-                ->url(GamePurchaseResource::getUrl('index', [
-                    'tableFilters' => [
-                        'status' => ['value' => 'paid'],
-                    ],
-                ]))
-                ->icon(Heroicon::OutlinedClipboardDocumentList),
+                ->url($ordersUrl.'?tableFilters[status][value]=paid'),
 
             Stat::make('Deposit Today', $inr($depositToday))
                 ->description('Total deposit: '.$inr($depositTotal))
-                ->descriptionIcon(Heroicon::OutlinedBanknotes)
                 ->color('warning')
-                ->url(GamePurchaseResource::getUrl('index', [
-                    'tableFilters' => [
-                        'status' => ['value' => 'paid'],
-                        'today' => ['isActive' => true],
-                    ],
-                ]))
-                ->icon(Heroicon::OutlinedCurrencyRupee),
+                ->url($ordersUrl.'?tableFilters[status][value]=paid&tableFilters[today][isActive]=true'),
 
             Stat::make('Level Income Today', $inr($incomeToday))
                 ->description('Total level income: '.$inr($incomeTotal))
-                ->descriptionIcon(Heroicon::OutlinedChartBar)
                 ->color('danger')
-                ->url(LevelIncomeResource::getUrl('index', [
-                    'tableFilters' => [
-                        'today' => ['isActive' => true],
-                    ],
-                ]))
-                ->icon(Heroicon::OutlinedArrowTrendingUp),
+                ->url($incomesUrl.'?tableFilters[today][isActive]=true'),
 
             Stat::make('Total Level Income', $inr($incomeTotal))
                 ->description('All credited upline income')
                 ->color('danger')
-                ->url(LevelIncomeResource::getUrl('index'))
-                ->icon(Heroicon::OutlinedChartPie),
+                ->url($incomesUrl),
 
             Stat::make('Members', (string) $members)
                 ->description($membersToday.' registered today')
                 ->color('info')
-                ->url(UserResource::getUrl('index'))
-                ->icon(Heroicon::OutlinedUserGroup),
+                ->url($usersUrl),
 
             Stat::make('Wallet Balance', $inr($walletTotal))
                 ->description('All members wallet total')
                 ->color('gray')
-                ->url(UserResource::getUrl('index'))
-                ->icon(Heroicon::OutlinedWallet),
+                ->url($usersUrl),
 
             Stat::make('Successful Payments', $inr($paymentsSuccess))
-                ->description('Gateway + company admin payments')
+                ->description('Gateway + company payments')
                 ->color('success')
-                ->url(GamePurchaseResource::getUrl('index', [
-                    'tableFilters' => [
-                        'status' => ['value' => 'paid'],
-                    ],
-                ]))
-                ->icon(Heroicon::OutlinedCreditCard),
+                ->url($ordersUrl.'?tableFilters[status][value]=paid'),
 
             Stat::make('Open Tickets', (string) $openTickets)
                 ->description('Open + answered support')
                 ->color('warning')
-                ->url(SupportTicketResource::getUrl('index'))
-                ->icon(Heroicon::OutlinedChatBubbleLeftRight),
+                ->url($ticketsUrl),
         ];
     }
 }

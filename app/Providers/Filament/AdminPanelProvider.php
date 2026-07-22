@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard;
 use App\Filament\Widgets\AdminStatsOverview;
 use App\Filament\Widgets\LatestLevelIncomes;
 use App\Filament\Widgets\LatestPaidOrders;
@@ -10,7 +11,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -61,7 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 fn (): HtmlString => new HtmlString(
-                    '<link rel="stylesheet" href="'.e(asset('css/filament-premium.css')).'?v=1">'
+                    '<link rel="stylesheet" href="'.e(asset('css/filament-premium.css')).'?v=2">'
                 )
             )
             ->renderHook(

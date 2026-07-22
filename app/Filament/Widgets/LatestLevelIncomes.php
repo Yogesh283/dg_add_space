@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LatestLevelIncomes extends TableWidget
 {
+    protected static bool $isLazy = false;
+
     protected static ?int $sort = 3;
 
     protected int | string | array $columnSpan = 'full';
