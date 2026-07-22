@@ -4,6 +4,14 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\RunLevelIncome;
+use App\Filament\Resources\GameAddons\GameAddonResource;
+use App\Filament\Resources\GamePurchases\GamePurchaseResource;
+use App\Filament\Resources\Games\GameResource;
+use App\Filament\Resources\Inquiries\InquiryResource;
+use App\Filament\Resources\LevelIncomes\LevelIncomeResource;
+use App\Filament\Resources\Payments\PaymentResource;
+use App\Filament\Resources\SupportTickets\SupportTicketResource;
+use App\Filament\Resources\Users\UserResource;
 use App\Filament\Widgets\AdminStatsOverview;
 use App\Filament\Widgets\LatestLevelIncomes;
 use App\Filament\Widgets\LatestPaidOrders;
@@ -12,6 +20,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -59,10 +68,15 @@ class AdminPanelProvider extends PanelProvider
             ->collapsedSidebarWidth('4.5rem')
             ->maxContentWidth(Width::Full)
             ->spa()
+            ->navigationGroups([
+                NavigationGroup::make('Main Data')->collapsed(false),
+                NavigationGroup::make('Income')->collapsed(false),
+                NavigationGroup::make('Support')->collapsed(false),
+            ])
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 fn (): HtmlString => new HtmlString(
-                    '<link rel="stylesheet" href="'.e(asset('css/filament-premium.css')).'?v=2">'
+                    '<link rel="stylesheet" href="'.e(asset('css/filament-premium.css')).'?v=3">'
                 )
             )
             ->renderHook(
@@ -71,13 +85,23 @@ class AdminPanelProvider extends PanelProvider
                     '<div style="padding:10px 16px;text-align:center;font-size:12px;color:#94a3b8;">DG AD SPACE Premium Admin • Secure Panel</div>'
                 )
             )
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->resources([
+                GameResource::class,
+                GameAddonResource::class,
+                UserResource::class,
+                GamePurchaseResource::class,
+                PaymentResource::class,
+                LevelIncomeResource::class,
+                SupportTicketResource::class,
+                InquiryResource::class,
+            ])
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
                 RunLevelIncome::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 AdminStatsOverview::class,
                 LatestPaidOrders::class,
