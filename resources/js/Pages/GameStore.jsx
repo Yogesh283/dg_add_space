@@ -151,7 +151,9 @@ export default function GameStore({ games = [], addons = [] }) {
 
     return (
         <>
-            <Head title="Ready-Made Android Games | DG Ad Space" />
+            <Head title="Game Store">
+                <link rel="icon" type="image/png" href="/img/app.icon.png" />
+            </Head>
 
             <div className="min-h-screen bg-[#0a0a0a] text-neutral-200">
                 <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/90 backdrop-blur-lg">

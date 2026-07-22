@@ -317,7 +317,8 @@ export default function Welcome({ featuredGame = null }) {
 
     return (
         <>
-            <Head title="DG Ad Space | Build. Launch. Earn.">
+            <Head title="DG AD SPACE">
+                <link rel="icon" type="image/png" href="/img/app.icon.png" />
                 <meta
                     name="description"
                     content="DG Ad Space develops your game, publishes it on Google Play Store, integrates Google AdMob, and grows your audience through digital marketing."

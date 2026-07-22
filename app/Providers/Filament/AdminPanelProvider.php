@@ -27,8 +27,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('vijay')
             ->login()
-            ->brandName('DG Ad Space')
+            ->brandName('DG AD SPACE')
             ->brandLogo(asset('img/logo.png'))
+            ->favicon(asset('img/app.icon.png'))
             ->brandLogoHeight('3.5rem')
             ->colors([
                 'primary' => Color::Blue,

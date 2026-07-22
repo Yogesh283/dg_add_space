@@ -6,7 +6,12 @@
 
         <title inertia>{{ config('app.name', 'DG AD SPACE') }}</title>
 
+        <link rel="icon" type="image/png" href="{{ asset('img/app.icon.png') }}">
+        <link rel="shortcut icon" type="image/png" href="{{ asset('img/app.icon.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('img/app.icon.png') }}">
+
         <meta name="robots" content="index,follow" />
+        <meta name="application-name" content="DG AD SPACE" />
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
