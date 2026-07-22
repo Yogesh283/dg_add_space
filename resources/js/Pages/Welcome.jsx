@@ -629,16 +629,10 @@ export default function Welcome({ featuredGame = null }) {
                                             <div className="flex items-end justify-between gap-3">
                                                 <div>
                                                     <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-500">
-                                                        Market Rate
+                                                        Market Price
                                                     </p>
-                                                    <p className="relative mt-1 inline-block text-lg font-semibold text-neutral-500">
-                                                        <span className="line-through decoration-[#ff5c1a] decoration-2">
-                                                            {plan.marketPrice}
-                                                        </span>
-                                                        <span
-                                                            aria-hidden
-                                                            className="pointer-events-none absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 rotate-[-8deg] bg-[#ff5c1a]"
-                                                        />
+                                                    <p className="mt-1 text-lg font-semibold text-neutral-300">
+                                                        {plan.marketPrice}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
