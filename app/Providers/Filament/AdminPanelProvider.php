@@ -20,11 +20,13 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -68,15 +70,65 @@ class AdminPanelProvider extends PanelProvider
             ->collapsedSidebarWidth('4.5rem')
             ->maxContentWidth(Width::Full)
             ->spa()
-            ->navigationGroups([
-                NavigationGroup::make('Main Data')->collapsible(false),
-                NavigationGroup::make('Income')->collapsible(false),
-                NavigationGroup::make('Support')->collapsible(false),
-            ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder->items([
+                    NavigationItem::make('Dashboard')
+                        ->icon(Heroicon::OutlinedHome)
+                        ->url(fn (): string => Dashboard::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
+                        ->sort(1),
+                    NavigationItem::make('Games Store')
+                        ->icon(Heroicon::OutlinedPuzzlePiece)
+                        ->url(fn (): string => GameResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.games.*'))
+                        ->sort(2),
+                    NavigationItem::make('Game Options')
+                        ->icon(Heroicon::OutlinedSquaresPlus)
+                        ->url(fn (): string => GameAddonResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.game-addons.*'))
+                        ->sort(3),
+                    NavigationItem::make('Users')
+                        ->icon(Heroicon::OutlinedUsers)
+                        ->url(fn (): string => UserResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.users.*'))
+                        ->sort(4),
+                    NavigationItem::make('Orders')
+                        ->icon(Heroicon::OutlinedBanknotes)
+                        ->url(fn (): string => GamePurchaseResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.game-purchases.*'))
+                        ->sort(5),
+                    NavigationItem::make('Payments')
+                        ->icon(Heroicon::OutlinedCreditCard)
+                        ->url(fn (): string => PaymentResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.payments.*'))
+                        ->sort(6),
+                    NavigationItem::make('Run Level Income')
+                        ->icon(Heroicon::OutlinedCurrencyRupee)
+                        ->url(fn (): string => RunLevelIncome::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.run-level-income'))
+                        ->sort(7),
+                    NavigationItem::make('Level Incomes')
+                        ->icon(Heroicon::OutlinedChartBar)
+                        ->url(fn (): string => LevelIncomeResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.level-incomes.*'))
+                        ->sort(8),
+                    NavigationItem::make('Support Tickets')
+                        ->icon(Heroicon::OutlinedChatBubbleLeftRight)
+                        ->url(fn (): string => SupportTicketResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.support-tickets.*'))
+                        ->sort(9),
+                    NavigationItem::make('Project Inquiries')
+                        ->icon(Heroicon::OutlinedRectangleStack)
+                        ->url(fn (): string => InquiryResource::getUrl('index'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.inquiries.*'))
+                        ->sort(10),
+                ]);
+            })
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 fn (): HtmlString => new HtmlString(
-                    '<link rel="stylesheet" href="'.e(asset('css/filament-premium.css')).'?v=3">'
+                    '<link rel="stylesheet" href="'.e(asset('css/filament-premium.css')).'?v=4">'
+                    .'<script>try{Object.keys(localStorage).filter(k=>k.toLowerCase().includes("collapsed")||k.toLowerCase().includes("filament")).forEach(k=>localStorage.removeItem(k))}catch(e){}</script>'
                 )
             )
             ->renderHook(
@@ -85,7 +137,6 @@ class AdminPanelProvider extends PanelProvider
                     '<div style="padding:10px 16px;text-align:center;font-size:12px;color:#94a3b8;">DG AD SPACE Premium Admin • Secure Panel</div>'
                 )
             )
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->resources([
                 GameResource::class,
                 GameAddonResource::class,
@@ -96,12 +147,10 @@ class AdminPanelProvider extends PanelProvider
                 SupportTicketResource::class,
                 InquiryResource::class,
             ])
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
                 RunLevelIncome::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 AdminStatsOverview::class,
                 LatestPaidOrders::class,
