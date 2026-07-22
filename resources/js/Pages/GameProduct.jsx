@@ -92,7 +92,7 @@ export default function GameProduct({ game, addons = [], related = [] }) {
                         </nav>
                         <div className="hidden items-center gap-3 md:flex">
                             {auth?.user ? (
-                                <a href="/member" className="juego-btn-outline px-4 py-2 text-sm">
+                                <a href="/member" className="juego-btn px-4 py-2 text-sm">
                                     <Users className="size-4" /> Referral & Earn
                                 </a>
                             ) : (
@@ -112,6 +112,18 @@ export default function GameProduct({ game, addons = [], related = [] }) {
                                 <a href="/" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700">Home</a>
                                 <a href="/services" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700">Services</a>
                                 <a href="/game-store" className="rounded-lg px-3 py-2 text-sm font-semibold text-[#ff5c1a]">Game Store</a>
+                                {auth?.user ? (
+                                    <a href="/member" className="rounded-lg bg-[#ff5c1a] px-3 py-2.5 text-center text-sm font-semibold text-white">
+                                        Referral & Earn
+                                    </a>
+                                ) : (
+                                    <>
+                                        <a href="/login" className="rounded-lg px-3 py-2 text-sm font-semibold text-neutral-700">Login</a>
+                                        <a href="/register" className="rounded-lg bg-[#ff5c1a] px-3 py-2.5 text-center text-sm font-semibold text-white">
+                                            Register
+                                        </a>
+                                    </>
+                                )}
                             </div>
                         </div>
                     )}

@@ -54,7 +54,7 @@ class MemberAuthController extends Controller
         event(new Registered($user));
         Auth::login($user);
 
-        return redirect()->route('game-store');
+        return redirect()->route('member.dashboard');
     }
 
     public function showLogin(): Response
@@ -91,6 +91,6 @@ class MemberAuthController extends Controller
         Auth::login($user, true);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('game-store'));
+        return redirect()->intended(route('member.dashboard'));
     }
 }

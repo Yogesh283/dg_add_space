@@ -46,9 +46,14 @@ export default function GameStore({ games = [] }) {
                         </nav>
                         <div className="hidden items-center gap-3 md:flex">
                             {auth?.user ? (
-                                <a href="/member" className="juego-btn-outline px-4 py-2 text-sm">
-                                    <Users className="size-4" /> Referral & Earn
-                                </a>
+                                <>
+                                    <a href="/member" className="juego-btn px-4 py-2 text-sm">
+                                        <Users className="size-4" /> Referral & Earn
+                                    </a>
+                                    <a href="/game-store" className="text-sm font-semibold text-neutral-600 hover:text-[#ff5c1a]">
+                                        Hi, {auth.user.name?.split(' ')[0] || 'Member'}
+                                    </a>
+                                </>
                             ) : (
                                 <>
                                     <a href="/login" className="text-sm font-semibold text-neutral-700 hover:text-[#ff5c1a]">Login</a>
@@ -70,6 +75,18 @@ export default function GameStore({ games = [] }) {
                                 <a href="/services" className="rounded-lg px-3 py-2 text-sm font-semibold">Services</a>
                                 <a href="/game-store" className="rounded-lg px-3 py-2 text-sm font-semibold text-[#ff5c1a]">Game Store</a>
                                 <a href="/#contact" className="rounded-lg px-3 py-2 text-sm font-semibold">Contact</a>
+                                {auth?.user ? (
+                                    <a href="/member" className="rounded-lg bg-[#ff5c1a] px-3 py-2.5 text-center text-sm font-semibold text-white">
+                                        Referral & Earn
+                                    </a>
+                                ) : (
+                                    <>
+                                        <a href="/login" className="rounded-lg px-3 py-2 text-sm font-semibold">Login</a>
+                                        <a href="/register" className="rounded-lg bg-[#ff5c1a] px-3 py-2.5 text-center text-sm font-semibold text-white">
+                                            Register
+                                        </a>
+                                    </>
+                                )}
                             </div>
                         </div>
                     )}
@@ -94,6 +111,16 @@ export default function GameStore({ games = [] }) {
                             </p>
                             <div className="mt-6 flex flex-wrap gap-3">
                                 <a href="#games" className="juego-btn"><Store className="size-4" /> Browse Games</a>
+                                {auth?.user ? (
+                                    <a href="/member" className="juego-btn-outline">
+                                        <Users className="size-4" /> Referral & Earn
+                                    </a>
+                                ) : (
+                                    <>
+                                        <a href="/register" className="juego-btn-outline">Register with Referral</a>
+                                        <a href="/login" className="juego-btn-outline">Login</a>
+                                    </>
+                                )}
                                 <a href="/services" className="juego-btn-outline">View Services</a>
                             </div>
                         </div>
@@ -170,6 +197,13 @@ export default function GameStore({ games = [] }) {
                                 Open any game page, add/remove services, and checkout with Razorpay.
                             </p>
                             <div className="mt-6 flex flex-wrap justify-center gap-3">
+                                {auth?.user ? (
+                                    <a href="/member" className="juego-btn">
+                                        <Users className="size-4" /> Open Referral & Earn
+                                    </a>
+                                ) : (
+                                    <a href="/register" className="juego-btn">Register / Join with Referral</a>
+                                )}
                                 <a href="/services" className="juego-btn-outline">Explore Services</a>
                                 <a href={whatsappBaseLink} className="pro-btn bg-emerald-600 text-white hover:bg-emerald-700">
                                     <MessageCircle className="size-4" /> Chat on WhatsApp
@@ -189,6 +223,11 @@ export default function GameStore({ games = [] }) {
                             <a href="/" className="hover:text-[#ff5c1a]">Home</a>
                             <a href="/services" className="hover:text-[#ff5c1a]">Services</a>
                             <a href="/game-store" className="hover:text-[#ff5c1a]">Game Store</a>
+                            {auth?.user ? (
+                                <a href="/member" className="hover:text-[#ff5c1a]">Referral & Earn</a>
+                            ) : (
+                                <a href="/register" className="hover:text-[#ff5c1a]">Register</a>
+                            )}
                             <a href="/#contact" className="hover:text-[#ff5c1a]">Contact</a>
                         </div>
                     </div>
