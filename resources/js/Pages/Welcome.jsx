@@ -564,15 +564,12 @@ export default function Welcome({ featuredGame = null }) {
                                             <div className="mt-3 flex items-end justify-between gap-3">
                                                 <div>
                                                     {Number(featuredGame.market_price) > 0 && (
-                                                        <p className="text-xs text-neutral-500">
-                                                            Market{' '}
-                                                            <span className="line-through">
-                                                                ₹{Number(featuredGame.market_price).toLocaleString('en-IN')}
-                                                            </span>
+                                                        <p className="text-xs text-neutral-400">
+                                                            Market Price ₹{Number(featuredGame.market_price).toLocaleString('en-IN')}
                                                         </p>
                                                     )}
                                                     <p className="text-xl font-extrabold text-[#ff5c1a]">
-                                                        ₹{Number(featuredGame.price).toLocaleString('en-IN')}
+                                                        DG Adspace Price ₹{Number(featuredGame.price).toLocaleString('en-IN')}
                                                     </p>
                                                 </div>
                                                 <a href="/game-store" className="juego-btn !px-4 !py-2 text-xs">

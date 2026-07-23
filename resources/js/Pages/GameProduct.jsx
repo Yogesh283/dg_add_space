@@ -235,16 +235,16 @@ export default function GameProduct({ game, addons = [], related = [] }) {
                                 <div className="mt-5 rounded-2xl border border-neutral-200 bg-[#f8fafc] p-4">
                                     {Number(game.market_price) > 0 && (
                                         <div className="mb-3 flex items-center justify-between gap-3 border-b border-neutral-200 pb-3 text-sm">
-                                            <span className="text-neutral-500">Market Price</span>
-                                            <span className="font-semibold text-neutral-400 line-through">
+                                            <span className="text-neutral-600">Market Price</span>
+                                            <span className="font-semibold text-neutral-800">
                                                 ₹{Number(game.market_price).toLocaleString('en-IN')}
                                             </span>
                                         </div>
                                     )}
                                     <ul className="space-y-2 text-sm text-neutral-700">
                                         <li className="flex justify-between gap-3">
-                                            <span>{game.name} (DG Adspace)</span>
-                                            <span className="font-semibold">₹{Number(game.price).toLocaleString('en-IN')}</span>
+                                            <span>DG Adspace Price</span>
+                                            <span className="font-semibold text-[#ff5c1a]">₹{Number(game.price).toLocaleString('en-IN')}</span>
                                         </li>
                                         {selectedAddons.map((addon) => (
                                             <li key={addon.id} className="flex items-center justify-between gap-3">
@@ -308,11 +308,13 @@ export default function GameProduct({ game, addons = [], related = [] }) {
                                         <img src={item.image} alt={item.name} className="h-28 w-full rounded-xl object-cover" />
                                         <p className="mt-2 font-bold text-neutral-900">{item.name}</p>
                                         {Number(item.market_price) > 0 && (
-                                            <p className="text-xs text-neutral-400 line-through">
-                                                ₹{Number(item.market_price).toLocaleString('en-IN')}
+                                            <p className="text-xs text-neutral-600">
+                                                Market Price ₹{Number(item.market_price).toLocaleString('en-IN')}
                                             </p>
                                         )}
-                                        <p className="text-sm font-semibold text-[#ff5c1a]">₹{Number(item.price).toLocaleString('en-IN')}</p>
+                                        <p className="text-sm font-semibold text-[#ff5c1a]">
+                                            DG Adspace ₹{Number(item.price).toLocaleString('en-IN')}
+                                        </p>
                                     </a>
                                 ))}
                             </div>

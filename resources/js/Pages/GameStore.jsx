@@ -228,17 +228,17 @@ export default function GameStore({ games = [] }) {
                                         <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 font-semibold text-emerald-600">AdMob Ready</span>
                                         <span className="rounded-full bg-[#ff5c1a]/10 px-2.5 py-1 font-semibold text-[#ff5c1a]">Play Store Ready</span>
                                     </div>
-                                    <div className="mt-3 space-y-0.5">
+                                    <div className="mt-3 space-y-1">
                                         {Number(game.market_price) > 0 && (
-                                            <p className="text-xs text-neutral-500">
+                                            <p className="text-sm text-neutral-600">
                                                 Market Price{' '}
-                                                <span className="line-through">
+                                                <span className="font-semibold text-neutral-800">
                                                     ₹{Number(game.market_price).toLocaleString('en-IN')}
                                                 </span>
                                             </p>
                                         )}
                                         <p className="text-xl font-extrabold text-[#ff5c1a]">
-                                            <span className="mr-1 text-xs font-semibold text-neutral-500">DG Adspace</span>
+                                            DG Adspace Price{' '}
                                             ₹{Number(game.price).toLocaleString('en-IN')}
                                         </p>
                                     </div>
