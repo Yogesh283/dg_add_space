@@ -75,31 +75,63 @@ class Game extends Model
 
         if (Str::startsWith($path, ['http://', 'https://'])) {
             $relative = parse_url($path, PHP_URL_PATH) ?: $path;
-            // Old absolute storage/uploads URLs → media route
-            if (preg_match('#/(?:storage|uploads)/(games/.+)$#', $relative, $m)) {
-                return '/media/'.$m[1];
+            if (preg_match('#/(?:storage|uploads|media|img)/(games/.+)$#', $relative, $m)) {
+                return $this->publicGameImageUrl($m[1]);
             }
 
             return $relative;
         }
 
-        if (Str::startsWith($path, '/img/')) {
+        if (Str::startsWith($path, '/img/') && ! str_contains($path, '/img/games/')) {
             return $path;
         }
 
-        if (Str::startsWith($path, '/storage/') || Str::startsWith($path, '/uploads/') || Str::startsWith($path, '/media/')) {
-            $trimmed = preg_replace('#^/(?:storage|uploads|media)/#', '', $path);
-
-            return '/media/'.ltrim((string) $trimmed, '/');
+        if (preg_match('#(?:^|/)(games/.+)$#', $path, $m)) {
+            return $this->publicGameImageUrl($m[1]);
         }
 
         if (Str::startsWith($path, '/')) {
             return $path;
         }
 
-        // Relative disk path e.g. games/xxx.png — always via Laravel media route
-        // so nginx docroot mismatch cannot break images.
-        return '/media/'.$path;
+        // Relative: games/xxx.png
+        if (str_starts_with($path, 'games/')) {
+            return $this->publicGameImageUrl($path);
+        }
+
+        return '/img/'.$path;
+    }
+
+    /**
+     * Ensure file is available under public/img/games (nginx static) and return URL.
+     */
+    private function publicGameImageUrl(string $relativeGamesPath): string
+    {
+        $relativeGamesPath = ltrim($relativeGamesPath, '/');
+        $basename = basename($relativeGamesPath);
+        $publicRelative = 'games/'.$basename;
+        $publicFull = public_path('img/'.$publicRelative);
+
+        if (! is_file($publicFull)) {
+            $sources = [
+                storage_path('app/public/games/'.$basename),
+                storage_path('app/public/'.$relativeGamesPath),
+                public_path('uploads/games/'.$basename),
+                public_path('storage/games/'.$basename),
+            ];
+
+            foreach ($sources as $source) {
+                if (is_file($source)) {
+                    if (! is_dir(dirname($publicFull))) {
+                        @mkdir(dirname($publicFull), 0755, true);
+                    }
+                    @copy($source, $publicFull);
+                    break;
+                }
+            }
+        }
+
+        return '/img/'.$publicRelative;
     }
 
     private function normalizeImagePath(mixed $path): ?string

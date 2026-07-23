@@ -51,6 +51,19 @@ return [
          * Direct public folder — works even when `storage:link` is missing
          * after deploy copy (cp -rf breaks symlinks).
          */
+        /*
+         * Game images in public/img/games — nginx serves *.png as static files,
+         * so Laravel /media/*.png routes never run. /img/* already works on live.
+         */
+        'game_images' => [
+            'driver' => 'local',
+            'root' => public_path('img'),
+            'url' => '/img',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         'uploads' => [
             'driver' => 'local',
             'root' => public_path('uploads'),

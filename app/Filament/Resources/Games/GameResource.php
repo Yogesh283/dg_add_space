@@ -82,7 +82,7 @@ class GameResource extends Resource
             FileUpload::make('image_path')
                 ->label('Game Image')
                 ->image()
-                ->disk('public')
+                ->disk('game_images')
                 ->directory('games')
                 ->visibility('public')
                 ->imageEditor()
