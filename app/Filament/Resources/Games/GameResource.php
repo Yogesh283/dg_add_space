@@ -6,6 +6,7 @@ use App\Filament\Resources\Games\Pages\CreateGame;
 use App\Filament\Resources\Games\Pages\EditGame;
 use App\Filament\Resources\Games\Pages\ListGames;
 use App\Models\Game;
+use App\Support\GameImageStorage;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -21,6 +22,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Http\UploadedFile;
 use UnitEnum;
 
 class GameResource extends Resource
@@ -89,6 +91,9 @@ class GameResource extends Resource
                 ->maxSize(4096)
                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                 ->helperText('Upload / change game image (max 4MB)')
+                ->saveUploadedFileUsing(function (UploadedFile $file): string {
+                    return GameImageStorage::storeUploaded($file);
+                })
                 ->columnSpanFull(),
             Select::make('tech')
                 ->options([
