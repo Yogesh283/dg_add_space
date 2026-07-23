@@ -67,15 +67,54 @@ class Game extends Model
 
     public function getImageUrlAttribute(): string
     {
-        if ($this->image_path) {
-            if (Str::startsWith($this->image_path, ['http://', 'https://', '/'])) {
-                return $this->image_path;
-            }
+        $path = $this->normalizeImagePath($this->image_path);
 
-            return Storage::disk('public')->url($this->image_path);
+        if (! $path) {
+            return '/img/landing-game-hero.png';
         }
 
-        return '/img/landing-game-hero.png';
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            $relative = parse_url($path, PHP_URL_PATH);
+
+            return $relative ?: $path;
+        }
+
+        if (Str::startsWith($path, '/')) {
+            return $path;
+        }
+
+        if (Storage::disk('uploads')->exists($path)) {
+            return '/uploads/'.$path;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return '/storage/'.$path;
+        }
+
+        // New admin uploads go to public/uploads
+        return '/uploads/'.$path;
+    }
+
+    private function normalizeImagePath(mixed $path): ?string
+    {
+        if (is_array($path)) {
+            $path = $path[0] ?? null;
+        }
+
+        if (! is_string($path) || trim($path) === '') {
+            return null;
+        }
+
+        $path = trim($path);
+
+        if (str_starts_with($path, '[')) {
+            $decoded = json_decode($path, true);
+            if (is_array($decoded)) {
+                $path = $decoded[0] ?? null;
+            }
+        }
+
+        return is_string($path) && $path !== '' ? ltrim($path) : null;
     }
 
     public function toStoreArray(): array

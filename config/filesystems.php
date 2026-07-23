@@ -47,6 +47,19 @@ return [
             'report' => false,
         ],
 
+        /*
+         * Direct public folder — works even when `storage:link` is missing
+         * after deploy copy (cp -rf breaks symlinks).
+         */
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads'),
+            'url' => '/uploads',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
