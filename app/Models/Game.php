@@ -13,6 +13,7 @@ class Game extends Model
         'slug',
         'category',
         'price',
+        'market_price',
         'image_path',
         'tech',
         'mode',
@@ -28,6 +29,7 @@ class Game extends Model
     {
         return [
             'price' => 'decimal:2',
+            'market_price' => 'decimal:2',
             'is_active' => 'boolean',
             'rating' => 'integer',
             'sort_order' => 'integer',
@@ -83,6 +85,7 @@ class Game extends Model
             'name' => $this->name,
             'slug' => $this->slug,
             'price' => (float) $this->price,
+            'market_price' => $this->market_price !== null ? (float) $this->market_price : null,
             'category' => $this->category,
             'tech' => $this->tech,
             'mode' => $this->mode,

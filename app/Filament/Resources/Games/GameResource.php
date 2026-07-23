@@ -48,12 +48,19 @@ class GameResource extends Resource
                 ->required()
                 ->maxLength(255)
                 ->columnSpanFull(),
+            TextInput::make('market_price')
+                ->label('Market Price (₹)')
+                ->numeric()
+                ->minValue(0)
+                ->prefix('₹')
+                ->helperText('Show only — strikethrough compare price (e.g. 100000)'),
             TextInput::make('price')
-                ->label('Price (₹)')
+                ->label('DG Adspace Price (₹)')
                 ->numeric()
                 ->required()
                 ->minValue(1)
-                ->prefix('₹'),
+                ->prefix('₹')
+                ->helperText('Actual selling price on website'),
             Select::make('category')
                 ->options([
                     'Racing Games' => 'Racing Games',
@@ -130,7 +137,14 @@ class GameResource extends Resource
                     ->width(70),
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('category')->badge()->sortable(),
+                TextColumn::make('market_price')
+                    ->label('Market')
+                    ->money('INR')
+                    ->placeholder('—')
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('price')
+                    ->label('DG Price')
                     ->money('INR')
                     ->sortable(),
                 TextColumn::make('tech'),

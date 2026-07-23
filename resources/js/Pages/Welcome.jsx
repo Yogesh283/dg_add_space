@@ -561,10 +561,20 @@ export default function Welcome({ featuredGame = null }) {
                                             <p className="mt-1 text-sm text-neutral-400">
                                                 {featuredGame.category} • {featuredGame.mode || 'Multiplayer'} • {featuredGame.tech || 'Unity'}
                                             </p>
-                                            <div className="mt-3 flex items-center justify-between gap-3">
-                                                <p className="text-xl font-extrabold text-[#ff5c1a]">
-                                                    ₹{Number(featuredGame.price).toLocaleString('en-IN')}
-                                                </p>
+                                            <div className="mt-3 flex items-end justify-between gap-3">
+                                                <div>
+                                                    {Number(featuredGame.market_price) > 0 && (
+                                                        <p className="text-xs text-neutral-500">
+                                                            Market{' '}
+                                                            <span className="line-through">
+                                                                ₹{Number(featuredGame.market_price).toLocaleString('en-IN')}
+                                                            </span>
+                                                        </p>
+                                                    )}
+                                                    <p className="text-xl font-extrabold text-[#ff5c1a]">
+                                                        ₹{Number(featuredGame.price).toLocaleString('en-IN')}
+                                                    </p>
+                                                </div>
                                                 <a href="/game-store" className="juego-btn !px-4 !py-2 text-xs">
                                                     View in Store
                                                 </a>

@@ -233,9 +233,17 @@ export default function GameProduct({ game, addons = [], related = [] }) {
                                 </div>
 
                                 <div className="mt-5 rounded-2xl border border-neutral-200 bg-[#f8fafc] p-4">
+                                    {Number(game.market_price) > 0 && (
+                                        <div className="mb-3 flex items-center justify-between gap-3 border-b border-neutral-200 pb-3 text-sm">
+                                            <span className="text-neutral-500">Market Price</span>
+                                            <span className="font-semibold text-neutral-400 line-through">
+                                                ₹{Number(game.market_price).toLocaleString('en-IN')}
+                                            </span>
+                                        </div>
+                                    )}
                                     <ul className="space-y-2 text-sm text-neutral-700">
                                         <li className="flex justify-between gap-3">
-                                            <span>{game.name} (Base)</span>
+                                            <span>{game.name} (DG Adspace)</span>
                                             <span className="font-semibold">₹{Number(game.price).toLocaleString('en-IN')}</span>
                                         </li>
                                         {selectedAddons.map((addon) => (
