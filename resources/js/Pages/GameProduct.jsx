@@ -307,6 +307,11 @@ export default function GameProduct({ game, addons = [], related = [] }) {
                                     <a key={item.id} href={`/game-store/${item.slug}`} className="pro-card overflow-hidden p-3 transition hover:-translate-y-0.5">
                                         <img src={item.image} alt={item.name} className="h-28 w-full rounded-xl object-cover" />
                                         <p className="mt-2 font-bold text-neutral-900">{item.name}</p>
+                                        {Number(item.market_price) > 0 && (
+                                            <p className="text-xs text-neutral-400 line-through">
+                                                ₹{Number(item.market_price).toLocaleString('en-IN')}
+                                            </p>
+                                        )}
                                         <p className="text-sm font-semibold text-[#ff5c1a]">₹{Number(item.price).toLocaleString('en-IN')}</p>
                                     </a>
                                 ))}
