@@ -74,25 +74,32 @@ class Game extends Model
         }
 
         if (Str::startsWith($path, ['http://', 'https://'])) {
-            $relative = parse_url($path, PHP_URL_PATH);
+            $relative = parse_url($path, PHP_URL_PATH) ?: $path;
+            // Old absolute storage/uploads URLs → media route
+            if (preg_match('#/(?:storage|uploads)/(games/.+)$#', $relative, $m)) {
+                return '/media/'.$m[1];
+            }
 
-            return $relative ?: $path;
+            return $relative;
+        }
+
+        if (Str::startsWith($path, '/img/')) {
+            return $path;
+        }
+
+        if (Str::startsWith($path, '/storage/') || Str::startsWith($path, '/uploads/') || Str::startsWith($path, '/media/')) {
+            $trimmed = preg_replace('#^/(?:storage|uploads|media)/#', '', $path);
+
+            return '/media/'.ltrim((string) $trimmed, '/');
         }
 
         if (Str::startsWith($path, '/')) {
             return $path;
         }
 
-        if (Storage::disk('uploads')->exists($path)) {
-            return '/uploads/'.$path;
-        }
-
-        if (Storage::disk('public')->exists($path)) {
-            return '/storage/'.$path;
-        }
-
-        // New admin uploads go to public/uploads
-        return '/uploads/'.$path;
+        // Relative disk path e.g. games/xxx.png — always via Laravel media route
+        // so nginx docroot mismatch cannot break images.
+        return '/media/'.$path;
     }
 
     private function normalizeImagePath(mixed $path): ?string

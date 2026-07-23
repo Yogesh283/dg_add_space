@@ -2,12 +2,17 @@
 
 use App\Http\Controllers\Auth\MemberAuthController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MemberDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Game;
 use App\Models\GameAddon;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::get('/media/{path}', [MediaController::class, 'show'])
+    ->where('path', '.*')
+    ->name('media.show');
 
 Route::get('/', function () {
     $featuredGame = Game::query()

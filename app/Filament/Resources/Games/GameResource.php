@@ -82,13 +82,13 @@ class GameResource extends Resource
             FileUpload::make('image_path')
                 ->label('Game Image')
                 ->image()
-                ->disk('uploads')
+                ->disk('public')
                 ->directory('games')
                 ->visibility('public')
                 ->imageEditor()
                 ->maxSize(4096)
                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                ->helperText('Upload / change game image (max 4MB). Saved to public/uploads/games')
+                ->helperText('Upload / change game image (max 4MB)')
                 ->columnSpanFull(),
             Select::make('tech')
                 ->options([
