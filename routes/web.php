@@ -10,9 +10,9 @@ use App\Models\GameAddon;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/media/{path}', [MediaController::class, 'show'])
-    ->where('path', '.*')
-    ->name('media.show');
+Route::get('/gi/{token}', [MediaController::class, 'gameImage'])
+    ->where('token', '[A-Za-z0-9]+')
+    ->name('game.image');
 
 Route::get('/', function () {
     $featuredGame = Game::query()

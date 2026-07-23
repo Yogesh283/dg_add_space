@@ -2,54 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class MediaController extends Controller
 {
-    public function show(string $path): BinaryFileResponse
+    /**
+     * Extension-free URL so nginx static *.png rules do not bypass Laravel.
+     * Example: /gi/01ky6q12123zawa775rw2z1w56
+     */
+    public function gameImage(string $token): BinaryFileResponse
     {
-        $path = str_replace('\\', '/', $path);
-        $path = ltrim($path, '/');
+        $token = strtolower($token);
 
-        if ($path === '' || str_contains($path, '..')) {
+        if ($token === '' || ! preg_match('/^[a-z0-9]+$/', $token)) {
             abort(404);
         }
 
-        $candidates = [
-            storage_path('app/public/'.$path),
-            public_path('uploads/'.$path),
-            public_path('img/'.$path),
-            public_path('storage/'.$path),
-        ];
+        $dirs = array_values(array_unique(array_filter([
+            storage_path('app/public/games'),
+            public_path('img/games'),
+            public_path('uploads/games'),
+            public_path('storage/games'),
+            base_path('img/games'),
+            base_path('public/img/games'),
+            dirname(base_path()).'/storage/app/public/games',
+            dirname(base_path()).'/public/img/games',
+            dirname(base_path()).'/img/games',
+            base_path('dgadspace.com/storage/app/public/games'),
+            base_path('dgadspace.com/public/img/games'),
+        ])));
 
-        // Also accept bare filenames stored as games/xxx.png
-        $basename = basename($path);
-        if (str_starts_with($path, 'games/') || ! str_contains($path, '/')) {
-            $file = str_starts_with($path, 'games/') ? $basename : $basename;
-            $candidates[] = storage_path('app/public/games/'.$file);
-            $candidates[] = public_path('uploads/games/'.$file);
-            $candidates[] = public_path('img/games/'.$file);
-            $candidates[] = public_path('storage/games/'.$file);
-        }
-
-        foreach (array_unique($candidates) as $fullPath) {
-            if (is_file($fullPath)) {
-                return response()->file($fullPath, [
-                    'Cache-Control' => 'public, max-age=604800',
-                ]);
+        foreach ($dirs as $dir) {
+            if (! is_dir($dir)) {
+                continue;
             }
-        }
 
-        // Last resort: Storage disks
-        foreach (['uploads', 'public'] as $disk) {
-            if (Storage::disk($disk)->exists($path)) {
-                return response()->file(Storage::disk($disk)->path($path), [
+            $match = $this->findFileByToken($dir, $token);
+            if ($match) {
+                return response()->file($match, [
                     'Cache-Control' => 'public, max-age=604800',
+                    'Content-Type' => mime_content_type($match) ?: 'image/png',
                 ]);
             }
         }
 
         abort(404);
+    }
+
+    private function findFileByToken(string $dir, string $token): ?string
+    {
+        foreach (glob($dir.DIRECTORY_SEPARATOR.$token.'.*') ?: [] as $file) {
+            if (is_file($file)) {
+                return $file;
+            }
+        }
+
+        // Case-insensitive fallback (older ULID filenames)
+        foreach (scandir($dir) ?: [] as $name) {
+            if ($name === '.' || $name === '..') {
+                continue;
+            }
+            $full = $dir.DIRECTORY_SEPARATOR.$name;
+            if (! is_file($full)) {
+                continue;
+            }
+            if (strtolower(pathinfo($name, PATHINFO_FILENAME)) === $token) {
+                return $full;
+            }
+        }
+
+        return null;
     }
 }
